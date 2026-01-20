@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BookStation.Core.SharedKernel;
 using System.Text.RegularExpressions;
-using BookStation.Core.SharedKernel;
 
 namespace BookStation.Domain.ValueObjects;
 

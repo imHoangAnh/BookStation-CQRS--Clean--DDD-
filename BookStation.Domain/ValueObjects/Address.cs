@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BookStation.Core.SharedKernel;
+﻿using BookStation.Core.SharedKernel;
 
 namespace BookStation.Domain.ValueObjects;
 
@@ -10,41 +7,16 @@ namespace BookStation.Domain.ValueObjects;
 /// </summary>
 public sealed class Address : ValueObject
 {
-    /// <summary>
-    /// Gets the street address.
-    /// </summary>
     public string Street { get; }
-
-    /// <summary>
-    /// Gets the ward/commune.
-    /// </summary>
-    public string? Ward { get; }
-
-    /// <summary>
-    /// Gets the district.
-    /// </summary>
-    public string? District { get; }
-
-    /// <summary>
-    /// Gets the city/province.
-    /// </summary>
+    public string Ward { get; }
     public string City { get; }
-
-    /// <summary>
-    /// Gets the country.
-    /// </summary>
     public string Country { get; }
-
-    /// <summary>
-    /// Gets the postal code.
-    /// </summary>
     public string? PostalCode { get; }
 
-    private Address(string street, string? ward, string? district, string city, string country, string? postalCode)
+    private Address(string street, string ward, string city, string country, string? postalCode)
     {
         Street = street;
         Ward = ward;
-        District = district;
         City = city;
         Country = country;
         PostalCode = postalCode;
@@ -57,27 +29,21 @@ public sealed class Address : ValueObject
         string street,
         string city,
         string country,
-        string? ward = null,
-        string? district = null,
+        string ward,
         string? postalCode = null)
     {
-        if (string.IsNullOrWhiteSpace(street))
-            throw new ArgumentException("Street cannot be empty.", nameof(street));
-
-        if (string.IsNullOrWhiteSpace(city))
-            throw new ArgumentException("City cannot be empty.", nameof(city));
-
-        if (string.IsNullOrWhiteSpace(country))
-            throw new ArgumentException("Country cannot be empty.", nameof(country));
+        ArgumentException.ThrowIfNullOrWhiteSpace(street);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ward);
+        ArgumentException.ThrowIfNullOrWhiteSpace(city);
+        ArgumentException.ThrowIfNullOrWhiteSpace(country);
 
         return new Address(
-            street.Trim(),
-            ward?.Trim(),
-            district?.Trim(),
-            city.Trim(),
-            country.Trim(),
-            postalCode?.Trim()
-        );
+                street.Trim(),
+                ward.Trim(),
+                city.Trim(),
+                country.Trim(),
+                postalCode?.Trim()
+            );
     }
 
     /// <summary>
@@ -91,11 +57,8 @@ public sealed class Address : ValueObject
 
             if (!string.IsNullOrWhiteSpace(Ward))
                 parts.Add(Ward);
-
-            if (!string.IsNullOrWhiteSpace(District))
-                parts.Add(District);
-
-            parts.Add(City);
+            if (!string.IsNullOrWhiteSpace(City))
+                parts.Add(City);
 
             if (!string.IsNullOrWhiteSpace(PostalCode))
                 parts.Add(PostalCode);
@@ -110,7 +73,6 @@ public sealed class Address : ValueObject
     {
         yield return Street;
         yield return Ward;
-        yield return District;
         yield return City;
         yield return Country;
         yield return PostalCode;

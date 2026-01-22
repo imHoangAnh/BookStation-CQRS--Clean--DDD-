@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
   </ItemGroup>
 

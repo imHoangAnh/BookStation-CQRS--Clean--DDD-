@@ -10,7 +10,7 @@ namespace BookStation.Domain.Repositories;
 public interface IUserRepository : IRepository<User, long>
 {
     /// <summary>
-    /// Gets a user by email.
+    /// Gets user by email.
     /// </summary>
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellation = default);
 
@@ -20,12 +20,12 @@ public interface IUserRepository : IRepository<User, long>
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellation = default);
 
     /// <summary>
-    /// Gets a user with their roles.
+    /// Gets user with their roles.
     /// </summary>  
     Task<User?> GetWithRolesAsync(long id, CancellationToken cancellation = default);
 
     /// <summary>
-    /// Gets a user with their seller profile.
+    /// Gets user with their seller profile.
     /// </summary>
     Task<User?> GetWithSellerProfileAsync(long id, CancellationToken cancellation = default);
 }

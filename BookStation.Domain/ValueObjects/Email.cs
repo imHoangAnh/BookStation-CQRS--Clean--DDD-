@@ -9,13 +9,22 @@ public sealed partial class Email : ValueObject
 
     public string Value { get; }
 
+
+
+    /// Private constructor - using factory method
+    /* Factory method cho phep tao doi tuong thong qua mot phuong thuc trung gian thay vi truc tiep su dung constructor
+     * Thay the cho viec goi new ClassName() trong code, giup code linh hoat va de mo rong hon 
+     * So sanh voi new() - phu thuoc class cu the, kho mo rong, logic tao object rai rac, kho test
+     * factory method - phu thuoc abstraction, de mo rong, logic tao object tap trung, de mock/test
+     * 
+     */
     private Email(string value)
     {
         Value = value;
     }
 
     /// <summary>
-    /// Creates a new Email value object.   
+    /// Factory method to create a new Email value object.   
     /// </summary>
     /// <param name="email">The email address string.</param>
     /// <returns>A new Email value object.</returns>
@@ -58,8 +67,9 @@ public sealed partial class Email : ValueObject
 
     public override string ToString() => Value;
 
-    public static implicit operator string(Email email) => email.Value;
+    public static implicit operator string(Email email) => email.Value; // chuyen kieu tu dong 
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
     private static partial Regex EmailRegex();
 }
+    

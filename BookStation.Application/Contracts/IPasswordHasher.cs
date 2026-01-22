@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BookStation.Domain.Entities.UserAggregate
+namespace BookStation.Application.Contracts
 {
-    internal class UserRole
+    internal interface IPasswordHasher
     {
     }
 }

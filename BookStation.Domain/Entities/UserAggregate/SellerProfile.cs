@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BookStation.Domain.Entities.UserAggregate
+namespace BookStation.Domain.Entities.UserAggregate;
+
+public class SellerProfile
 {
-    internal class SellerProfile
-    {
-    }
 }

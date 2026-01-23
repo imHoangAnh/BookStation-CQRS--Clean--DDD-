@@ -9,10 +9,10 @@ namespace BookStation.Domain.ValueObjects;
 public sealed partial class Password : ValueObject
 {
     public const int MinLength = 8;
-    public string HashedValue { get; }
-    private Password(string hashedValue)
+    public string Value { get; }
+    private Password(string value)
     {
-        HashedValue = hashedValue;
+        Value = value;
     }
     public static Password Create(string password)
     {

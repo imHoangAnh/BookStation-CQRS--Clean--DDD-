@@ -1,10 +1,12 @@
-﻿using System;
+﻿using BookStation.Domain.ValueObjects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BookStation.Application.Contracts
+namespace BookStation.Application.Contracts;
+
+public interface IPasswordHasher
 {
-    internal interface IPasswordHasher
-    {
-    }
+    string HashPassword(Password password);
+    bool VerifyPassword(Password password, string passwordHash);
 }

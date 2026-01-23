@@ -15,7 +15,7 @@ public class User : AggregateRoot<long>
     public PhoneNumber PhoneNumber { get; private set; }
     public Password Password { get; private set; }
     public bool IsVerified { get; private set; }
-    public UserStatus Status { get; private set;
+    public UserStatus Status { get; private set; }
     public SellerProfile? SellerProfile { get; private set; }
     
 

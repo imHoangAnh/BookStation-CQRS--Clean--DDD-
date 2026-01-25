@@ -7,6 +7,6 @@ namespace BookStation.Application.Contracts;
 
 public interface IPasswordHasher
 {
-    string HashPassword(Password password);
-    bool VerifyPassword(Password password, string passwordHash);
+    PasswordHash HashPassword(Password password);
+    bool VerifyPassword(Password password, PasswordHash passwordHash);
 }

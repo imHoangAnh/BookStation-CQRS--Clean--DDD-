@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(typeof(RegisterUserResult), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register( RegisterUserCommand command)
+    public async Task<IActionResult> Register( RegisterCommand command)
     {
         try
         {

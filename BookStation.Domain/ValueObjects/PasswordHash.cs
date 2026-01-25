@@ -24,7 +24,8 @@ public sealed class PasswordHash : ValueObject
         if (string.IsNullOrWhiteSpace(hashedValue))
             throw new ArgumentException("Password hash cannot be empty.", nameof(hashedValue));
 
-        if throw new ArgumentException("Invalid password hash format.", nameof(hashedValue));
+        if (hashedValue.Length < HashLength)
+            throw new ArgumentException("Invalid password hash format.", nameof(hashedValue));
 
         // Validate Base64 format
         if (!IsValidBase64(hashedValue))
@@ -59,12 +60,12 @@ public sealed class PasswordHash : ValueObject
         }
     }
 
-    protected override IEnumerable<object?> GetAtomicValues()
+    protected override IEnumerable<object?> GetEqualityComponents()
     {
         yield return HashedValue;
     }
 
     public override string ToString() => "[PROTECTED]"; // Never expose hash in logs
 
-    public static implicit operator string(PasswordHash hash) => hash.Value;
+    public static implicit operator string(PasswordHash hash) => hash.HashedValue;
 }

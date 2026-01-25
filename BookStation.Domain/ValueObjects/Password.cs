@@ -40,7 +40,7 @@ public sealed partial class Password : ValueObject
         {
             result = Create(password);
             errorMessage = null;
-            return true;
+            return true;    
         }
         catch (ArgumentException ex)
         {
@@ -81,12 +81,12 @@ public sealed partial class Password : ValueObject
 
     protected override IEnumerable<object?> GetEqualityComponents()
     {
-        yield return HashedValue;
+        yield return Value;
     }
 
     public override string ToString() => "********"; // Never expose password in logs
 
-    public static implicit operator string(Password password) => password.HashedValue;
+    public static implicit operator string(Password password) => password.Value;
 
     [GeneratedRegex(@"[A-Z]", RegexOptions.Compiled)]
     private static partial Regex UpperCaseRegex();

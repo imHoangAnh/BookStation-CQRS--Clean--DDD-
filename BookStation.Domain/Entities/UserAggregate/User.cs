@@ -8,12 +8,12 @@ using System.Text;
 
 namespace BookStation.Domain.Entities.UserAggregate;
 
-public class User : AggregateRoot<long>
+public class User : AggregateRoot<Guid>
 {
     public Email Email { get; private set; }
     public string FullName { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
-    public Password Password { get; private set; }
+    public PasswordHash Password { get; private set; }
     public bool IsVerified { get; private set; }
     public UserStatus Status { get; private set; }
     public SellerProfile? SellerProfile { get; private set; }
@@ -33,14 +33,17 @@ public class User : AggregateRoot<long>
     /// <param name="fullname"></param>
     /// <param name="phonenumber"></param>
     /// <returns></returns>
-    public User Create(Email email, string password, string fullname, PhoneNumber? phonenumber) 
+    public User Create(Email email, PasswordHash password, string fullname, PhoneNumber? phonenumber) 
     {
+        if (string.IsNullOrWhiteSpace(fullname))
+            throw new ArgumentException("Full name is required.", nameof(fullname));
+
         var user = new User()
         {
             Email = email,
             FullName = fullname,
             PhoneNumber = phonenumber,
-            Password = Password.Create(password),
+            PasswordHash = password,
             IsVerified = false, // mac dinh la chua xac thuc 
             Status = UserStatus.Pending  // mac dinh la dang cho xet duyet
         };

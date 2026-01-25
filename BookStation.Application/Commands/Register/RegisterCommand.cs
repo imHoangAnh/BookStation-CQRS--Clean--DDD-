@@ -9,7 +9,7 @@ namespace BookStation.Application.Commands.RegisterUser;
 ///  Command to register a new user.
 ///  Implement IRequest<T> để MediatR có thể dispatch.
 /// </summary>
-public record RegisterUserCommand : IRequest<RegisterUserResult>
+public record RegisterCommand : IRequest<RegisterUserResult>
 {
     public required string Email { get; init; }
     public required string Password { get; init; }

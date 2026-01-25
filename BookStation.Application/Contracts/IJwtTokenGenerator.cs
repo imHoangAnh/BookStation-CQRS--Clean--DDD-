@@ -6,5 +6,5 @@ namespace BookStation.Application.Contracts;
 
 public interface IJwtTokenGenerator
 {
-    string GenerateToken(long userId, string email);
+    string GenerateToken(Guid userId, string email);
 }

@@ -10,8 +10,8 @@ namespace BookStation.Domain.Entities.UserAggregate;
 /// </summary>
 public abstract class UserEvents : DomainEvent
 {
-    public long UserId { get; }
-    protected UserEvents(long userId)
+    public Guid UserId { get; }
+    protected UserEvents(Guid userId)
     {
         UserId = userId;
     }
@@ -36,7 +36,7 @@ public sealed class UserUpdatedEvent : UserEvents
 {
     public string UpdateType { get; }
 
-    public UserUpdatedEvent(long userId, string updateType) : base(userId)
+    public UserUpdatedEvent(Guid userId, string updateType) : base(userId)
     {
         UpdateType = updateType;
     }
@@ -50,7 +50,7 @@ public sealed class UserEmailChangedEvent : UserEvents
     public string OldEmail { get; }
     public string NewEmail { get; }
 
-    public UserEmailChangedEvent(long userId, string oldEmail, string newEmail) : base(userId)
+    public UserEmailChangedEvent(Guid userId, string oldEmail, string newEmail) : base(userId)
     {
         OldEmail = oldEmail;
         NewEmail = newEmail;
@@ -62,7 +62,7 @@ public sealed class UserEmailChangedEvent : UserEvents
 /// </summary>
 public sealed class UserPasswordChangedEvent : UserEvents
 {
-    public UserPasswordChangedEvent(long userId) : base(userId)
+    public UserPasswordChangedEvent(Guid userId) : base(userId)
     {
     }
 }
@@ -72,7 +72,7 @@ public sealed class UserPasswordChangedEvent : UserEvents
 /// </summary>
 public sealed class UserVerifiedEvent : UserEvents
 {
-    public UserVerifiedEvent(long userId) : base(userId)
+    public UserVerifiedEvent(Guid userId) : base(userId)
     {
     }
 }
@@ -82,7 +82,7 @@ public sealed class UserVerifiedEvent : UserEvents
 /// </summary>
 public sealed class UserDeactivatedEvent : UserEvents
 {
-    public UserDeactivatedEvent(long userId) : base(userId)
+    public UserDeactivatedEvent(Guid userId) : base(userId)
     {
     }
 }
@@ -94,7 +94,7 @@ public sealed class UserBannedEvent : UserEvents
 {
     public string Reason { get; }
 
-    public UserBannedEvent(long userId, string reason) : base(userId)
+    public UserBannedEvent(Guid userId, string reason) : base(userId)
     {
         Reason = reason;
     }
@@ -105,7 +105,7 @@ public sealed class UserBannedEvent : UserEvents
 /// </summary>
 public sealed class UserBecameSellerEvent : UserEvents
 {
-    public UserBecameSellerEvent(long userId) : base(userId)
+    public UserBecameSellerEvent(Guid userId) : base(userId)
     {
     }
 }

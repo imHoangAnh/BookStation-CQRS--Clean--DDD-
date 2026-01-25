@@ -12,17 +12,17 @@ using BookStation.Application.Contracts;
 
 namespace BookStation.Application.Commands.RegisterUser;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterUserResult>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
-    public RegisterUserCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    public RegisterCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<RegisterUserResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         // Check if email already exists
         if (await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken))
@@ -36,19 +36,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         var password = Password.Create(request.Password);
 
         // Hash the password
-        var passwordHash = _passwordHasher.HashPassword(request.Password);
-
-        // Create PhoneNumber value object if provided
-        var phoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : PhoneNumber.Create(request.PhoneNumber);
-
-        // Create User entity
+        var passwordHash = _passwordHasher.HashPassword(password);
         var user = User.Create(email, passwordHash, request.FullName, phoneNumber);
 
         // Save user to repository
         await _userRepository.TaskAsync(user, cancellationToken);
         // Return result
-        return new RegisterUserResult(user.Id, user.Email.Value, user.IsVerified);
-
+        return new RegisterResult
+        {
+            UserId = user.Id,
+            Email = user.Email.Value,
+            IsVerified = user.IsVerified
+        };
     }
 }           
 

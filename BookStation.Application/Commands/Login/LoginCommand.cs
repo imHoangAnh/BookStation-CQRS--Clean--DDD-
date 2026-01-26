@@ -14,6 +14,6 @@ public record LoginCommand : IRequest<LoginResult>
 public record LoginResult
 {
     public Guid UserId { get; init; }
-    public string Token { get; init; }
-    
+    public required string Token { get; init; }
+    public DateTime ExpiresAt { get; init; }
 }

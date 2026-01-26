@@ -13,7 +13,7 @@ namespace BookStation.WebApi.Controllers;
 /// Handles registration, login, profile management and password change.
 /// </summary>
 [ApiController]
-[Route("api/auth")]
+[Route("")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("register")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(RegisterUserResult), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(RegisterResult), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register( RegisterCommand command)
     {

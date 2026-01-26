@@ -10,6 +10,8 @@ namespace BookStation.Domain.Entities.UserAggregate;
 
 public class User : AggregateRoot<Guid>
 {
+    
+
     public Email Email { get; private set; }
     public string FullName { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }

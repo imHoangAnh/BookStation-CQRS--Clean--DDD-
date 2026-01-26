@@ -9,7 +9,7 @@ namespace BookStation.Application.Commands.RegisterUser;
 ///  Command to register a new user.
 ///  Implement IRequest<T> để MediatR có thể dispatch.
 /// </summary>
-public record RegisterCommand : IRequest<RegisterUserResult>
+public record RegisterCommand : IRequest<RegisterResult>
 {
     public required string Email { get; init; }
     public required string Password { get; init; }
@@ -31,10 +31,12 @@ public record RegisterCommand : IRequest<RegisterUserResult>
 /// <summary>
 ///  Result of the RegisterUserCommand.
 /// </summary>
-public record RegisterUserResult(long UserId, string Email, bool IsVerified)
+public record RegisterResult
 {
-};
-
+    public Guid UserId { get; init; }
+    public required string Email { get; init; }
+    public bool IsVerified { get; init; } = false;
+}
 
 /*
 Khi bạn dùng record, C# compiler tự động generate:

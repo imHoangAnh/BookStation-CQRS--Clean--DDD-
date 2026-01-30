@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookStation.Domain\BookStation.Domain.csproj" />
+    <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
   </ItemGroup>
 
 </Project>

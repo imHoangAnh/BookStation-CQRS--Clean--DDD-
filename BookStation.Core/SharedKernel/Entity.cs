@@ -13,8 +13,8 @@ where TId : IEquatable<TId>
     /// Gets/sets the entity identifier.
     /// </summary>
     public TId Id { get; protected set; } = default!;
-    public DateTime CreatedAt { get; protected set; } = DateTime.UtcNow;
-    public DateTime? UpdatedAt { get; protected set; }
+    public DateTime CreatedAt { get;  set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
     protected Entity()
     {
     }

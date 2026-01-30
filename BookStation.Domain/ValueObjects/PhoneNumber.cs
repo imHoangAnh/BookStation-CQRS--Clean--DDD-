@@ -13,7 +13,13 @@ public sealed partial class PhoneNumber : ValueObject
     /// <summary>
     /// Gets the phone number value.
     /// </summary>
-    public string Value { get; }
+    public string Value { get; private set; }
+
+    // Required for EF Core
+    private PhoneNumber()
+    {
+        Value = string.Empty;
+    }
 
     private PhoneNumber(string value)
     {
@@ -34,7 +40,7 @@ public sealed partial class PhoneNumber : ValueObject
         if (cleaned.StartsWith("+84"))
             cleaned = "0" + cleaned.Substring(3);
 
-        if (cleaned.StartsWith("84") && cleaned.Length>=11)
+        if (cleaned.StartsWith("84") && cleaned.Length >= 11)
             cleaned = "0" + cleaned.Substring(2);
 
         if (cleaned.Length != PhoneLength)
@@ -72,7 +78,7 @@ public sealed partial class PhoneNumber : ValueObject
 
     public static implicit operator string(PhoneNumber phone) => phone.Value;
 
-    [GeneratedRegex(@"^(0[2-9][0-9]{8})$", RegexOptions.Compiled)]
+    [GeneratedRegex(@"^0\d{9}$", RegexOptions.Compiled)]
     private static partial Regex PhoneRegex();
 }
 

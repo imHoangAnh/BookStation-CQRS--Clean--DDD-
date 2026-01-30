@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using MediatR;
 
-namespace BookStation.Application.Commands.RegisterUser;
+namespace BookStation.Application.Commands.Register;
 
 /// <summary>
 ///  Command to register a new user.

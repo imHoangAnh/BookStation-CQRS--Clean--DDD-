@@ -1,44 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BookStation.Core.SharedKernel;
+﻿using BookStation.Core.SharedKernel;
 using System.Text.RegularExpressions;
 
 namespace BookStation.Domain.ValueObjects;
 
-public sealed class PasswordHash : ValueObject
+public sealed partial class PasswordHash : ValueObject
 {
-    /// <summary>
-    /// Expected minimum length for a valid password hash (Base64 encoded).
-    /// Salt (16 bytes) + Hash (32 bytes) = 48 bytes -> ~64 chars in Base64.
-    /// </summary>
-    private const int HashLength = 40; 
-    public string HashedValue { get; }
+    private const int MinBcryptLength = 59;
+
+    public string HashedValue { get; private set; }
+
+    // Required for EF Core
+    private PasswordHash()
+    {
+        HashedValue = string.Empty;
+    }
 
     private PasswordHash(string hashedValue)
     {
         HashedValue = hashedValue;
     }
+
     public static PasswordHash FromHash(string hashedValue)
     {
         if (string.IsNullOrWhiteSpace(hashedValue))
             throw new ArgumentException("Password hash cannot be empty.", nameof(hashedValue));
 
-        if (hashedValue.Length < HashLength)
-            throw new ArgumentException("Invalid password hash format.", nameof(hashedValue));
-
-        // Validate Base64 format
-        if (!IsValidBase64(hashedValue))
-            throw new ArgumentException("Password hash must be in valid Base64 format.", nameof(hashedValue));
+        if (!IsValidBcryptHash(hashedValue))
+            throw new ArgumentException("Invalid BCrypt password hash format.", nameof(hashedValue));
 
         return new PasswordHash(hashedValue);
     }
 
-    /// <summary>
-    /// Creates a PasswordHash from database persistence 
-    /// This method is slightly less strict for backward compatibility
-    /// </summary>
-    /// <returns>A new PasswordHash value object.</returns>
     internal static PasswordHash FromPersistence(string hashedValue)
     {
         if (string.IsNullOrWhiteSpace(hashedValue))
@@ -47,17 +39,12 @@ public sealed class PasswordHash : ValueObject
         return new PasswordHash(hashedValue);
     }
 
-    private static bool IsValidBase64(string value)
+    private static bool IsValidBcryptHash(string value)
     {
-        try
-        {
-            Convert.FromBase64String(value);
-            return true;
-        }
-        catch
-        {
+        if (value.Length < MinBcryptLength)
             return false;
-        }
+
+        return BcryptHashRegex().IsMatch(value);
     }
 
     protected override IEnumerable<object?> GetEqualityComponents()
@@ -65,7 +52,6 @@ public sealed class PasswordHash : ValueObject
         yield return HashedValue;
     }
 
-    public override string ToString() => "[PROTECTED]"; // Never expose hash in logs
-
-    public static implicit operator string(PasswordHash hash) => hash.HashedValue;
+    [GeneratedRegex(@"^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$", RegexOptions.Compiled)]
+    private static partial Regex BcryptHashRegex();
 }

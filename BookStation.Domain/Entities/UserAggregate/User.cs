@@ -10,12 +10,12 @@ namespace BookStation.Domain.Entities.UserAggregate;
 
 public class User : AggregateRoot<Guid>
 {
-    
 
-    public Email Email { get; private set; }
-    public string FullName { get; private set; }
-    public PhoneNumber PhoneNumber { get; private set; }
-    public PasswordHash Password { get; private set; }
+
+    public Email Email { get; private set; } = default!;
+    public string FullName { get; private set; } = string.Empty;
+    public PhoneNumber? PhoneNumber { get; private set; } // Thêm dấu ?
+    public PasswordHash PasswordHash { get; private set; } = default!;
     public bool IsVerified { get; private set; }
     public UserStatus Status { get; private set; }
     public SellerProfile? SellerProfile { get; private set; }
@@ -35,7 +35,7 @@ public class User : AggregateRoot<Guid>
     /// <param name="fullname"></param>
     /// <param name="phonenumber"></param>
     /// <returns></returns>
-    public User Create(Email email, PasswordHash password, string fullname, PhoneNumber? phonenumber) 
+    public static User Create(Email email, PasswordHash password, string fullname, PhoneNumber? phonenumber) 
     {
         if (string.IsNullOrWhiteSpace(fullname))
             throw new ArgumentException("Full name is required.", nameof(fullname));
@@ -44,7 +44,7 @@ public class User : AggregateRoot<Guid>
         {
             Email = email,
             FullName = fullname,
-            PhoneNumber = phonenumber,
+            PhoneNumber = phonenumber!, // hoặc default! nếu nullable trong entity
             PasswordHash = password,
             IsVerified = false, // mac dinh la chua xac thuc 
             Status = UserStatus.Pending  // mac dinh la dang cho xet duyet
@@ -63,7 +63,7 @@ public class User : AggregateRoot<Guid>
     /// </summary>
     public void UpdateProfile(string? fullName, PhoneNumber? phonenumber)
     {
-        FullName = fullName;
+        FullName = fullName ?? FullName;
         PhoneNumber = phonenumber;
         UpdatedAt = DateTime.UtcNow;
 
@@ -89,9 +89,9 @@ public class User : AggregateRoot<Guid>
     /// <summary>
     /// Changes the user's password.
     /// </summary>
-    public void ChangePassword(string newPasswordHash)
+    public void ChangePassword(PasswordHash newPasswordHash)
     {
-        PasswordHash = newPasswordHash;
+        PasswordHash = newPasswordHash ?? throw new ArgumentException(nameof(newPasswordHash));
         UpdatedAt = DateTime.UtcNow;
 
         AddDomainEvent(new UserPasswordChangedEvent(Id));

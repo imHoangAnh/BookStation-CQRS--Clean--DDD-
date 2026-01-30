@@ -1,10 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FluentValidation;
 
-namespace BookStation.Application.Commands.Login
+namespace BookStation.Application.Commands.Login;
+
+public class LoginCommandValidator : AbstractValidator<LoginCommand>
 {
-    internal class LoginCommandValidator
+    public LoginCommandValidator()
     {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress()
+            .WithMessage("Invalid email format.");
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .WithMessage("Password is required.");
     }
 }

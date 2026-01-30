@@ -4,9 +4,6 @@
     <Project Path="BookStation.Core/BookStation.Core.csproj" Id="76418e15-7685-4dfa-b487-0d7a0a508fe1" />
     <Project Path="BookStation.Domain/BookStation.Domain.csproj" />
     <Project Path="BookStation.Infrastructure/BookStation.Infrastructure.csproj" />
-    <Project Path="BookStation.Persistence/BookStation.Persistence.csproj" />
-    <Project Path="BookStation.Presentation/BookStation.Presentation.csproj" />
-    <Project Path="BookStation.Query/BookStation.Query.csproj" Id="a88fee8f-97d4-43a1-adb0-bc2f8d098193" />
     <Project Path="BookStation.WebApi/BookStation.WebApi.csproj" />
   </Folder>
 </Solution>

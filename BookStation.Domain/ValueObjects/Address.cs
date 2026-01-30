@@ -7,11 +7,20 @@ namespace BookStation.Domain.ValueObjects;
 /// </summary>
 public sealed class Address : ValueObject
 {
-    public string Street { get; }
-    public string Ward { get; }
-    public string City { get; }
-    public string Country { get; }
-    public string? PostalCode { get; }
+    public string Street { get; private set; }
+    public string Ward { get; private set; }
+    public string City { get; private set; }
+    public string Country { get; private set; }
+    public string? PostalCode { get; private set; }
+
+    // Required for EF Core
+    private Address() 
+    {
+        Street = string.Empty;
+        Ward = string.Empty;
+        City = string.Empty;
+        Country = string.Empty;
+    }
 
     private Address(string street, string ward, string city, string country, string? postalCode)
     {
@@ -59,11 +68,10 @@ public sealed class Address : ValueObject
                 parts.Add(Ward);
             if (!string.IsNullOrWhiteSpace(City))
                 parts.Add(City);
-
+            if (!string.IsNullOrWhiteSpace(Country))
+                parts.Add(Country);
             if (!string.IsNullOrWhiteSpace(PostalCode))
                 parts.Add(PostalCode);
-
-            parts.Add(Country);
 
             return string.Join(", ", parts);
         }
@@ -77,7 +85,5 @@ public sealed class Address : ValueObject
         yield return Country;
         yield return PostalCode;
     }
-
-    public override string ToString() => FullAddress;
 }
 

@@ -1,5 +1,6 @@
-﻿using BookStation.Application.Commands.RegisterUser;
-using BookStation.Application.Features.Auth.Commands;
+﻿using BookStation.Application.Commands.Login;
+using BookStation.Application.Commands.UpdateProfile;
+using BookStation.Application.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,7 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPost("login")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LoginResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
@@ -91,14 +92,14 @@ public class AuthController : ControllerBase
     /// </summary>
     [HttpPut("profile")]
     [Authorize]
-    [ProducesResponseType(typeof(UpdateProfileResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UpdateProfileResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             return Unauthorized();
 
         try
@@ -116,32 +117,32 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Change current user password.
     /// </summary>
-    [HttpPost("change-password")]
-    [Authorize]
-    [ProducesResponseType(typeof(ChangePasswordResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //[HttpPost("change-password")]
+    //[Authorize]
+    //[ProducesResponseType(typeof(ChangePasswordResponse), StatusCodes.Status200OK)]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    //public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    //{
+    //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
-            return Unauthorized();
+    //    if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
+    //        return Unauthorized();
 
-        if (request.NewPassword != request.ConfirmPassword)
-            return BadRequest(new { error = "New password and confirm password do not match." });
+    //    if (request.NewPassword != request.ConfirmPassword)
+    //        return BadRequest(new { error = "New password and confirm password do not match." });
 
-        try
-        {
-            var command = new ChangePasswordCommand(userId, request.CurrentPassword, request.NewPassword);
-            var result = await _mediator.Send(command);
-            return Ok(result);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
-    }
+    //    try
+    //    {
+    //        var command = new ChangePasswordCommand(userId, request.CurrentPassword, request.NewPassword);
+    //        var result = await _mediator.Send(command);
+    //        return Ok(result);
+    //    }
+    //    catch (InvalidOperationException ex)
+    //    {
+    //        return BadRequest(new { error = ex.Message });
+    //    }
+    //}
 }
 
 // Request DTOs

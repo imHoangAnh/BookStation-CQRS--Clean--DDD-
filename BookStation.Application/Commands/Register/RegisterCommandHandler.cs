@@ -10,7 +10,7 @@ using BookStation.Domain.Entities.UserAggregate;
 using BookStation.Domain.Repositories;
 using BookStation.Application.Contracts;
 
-namespace BookStation.Application.Commands.RegisterUser;
+namespace BookStation.Application.Commands.Register;
 
 public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResult>
 {
@@ -37,6 +37,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
 
         // Hash the password
         var passwordHash = _passwordHasher.HashPassword(password);
+
+        // Create PhoneNumber value object if provided
+        PhoneNumber? phoneNumber = null;
+        if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+        {
+            phoneNumber = PhoneNumber.Create(request.PhoneNumber);
+        }
+
         var user = User.Create(email, passwordHash, request.FullName, phoneNumber);
 
         // Save user to repository
@@ -49,5 +57,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterR
             IsVerified = user.IsVerified
         };
     }
-}           
+}
+
 

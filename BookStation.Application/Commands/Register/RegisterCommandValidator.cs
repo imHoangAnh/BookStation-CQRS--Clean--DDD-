@@ -1,30 +1,33 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Text;
-//using FluentValidation;
+﻿using FluentValidation;
 
-//namespace BookStation.Application.Commands.RegisterUser;
+namespace BookStation.Application.Commands.Register;
 
-//public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
-//{
-//    public RegisterCommandValidator()
-//    {
-//        //Email
-//        RuleFor(x => x.Email)
-//            .NotEmpty().WithMessage("Email is required.")
-//            .EmailAddress().WithMessage("Invalid email format.");
-//        //Password
-//        RuleFor(x => x.Password)
-//            .NotEmpty().WithMessage("Password is required.")
-//            .Custom((password, context) =>
-//            {
-//                if (string.IsNullOrEmpty(password))
-//            });
-//        RuleFor(x => x.FullName)
-//            .NotEmpty().WithMessage("Full name is required.")
-//            .MaximumLength(100).WithMessage("Full name cannot exceed 100 characters.");
-//        RuleFor(x => x.PhoneNumber)
-//            .MaximumLength(15).WithMessage("Phone number cannot exceed 15 characters.")
-//            .When(x => !string.IsNullOrWhiteSpace(x.PhoneNumber));
-//    }
-//}
+public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
+{
+    public RegisterCommandValidator()
+    {
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress()
+            .WithMessage("Invalid email format.");
+
+        RuleFor(x => x.Password)
+            .NotEmpty()
+            .MinimumLength(8)
+            .WithMessage("Password must be at least 8 characters.");
+
+        RuleFor(x => x.ConfirmPassword)
+            .Equal(x => x.Password)
+            .WithMessage("Passwords do not match.");
+
+        RuleFor(x => x.FullName)
+            .NotEmpty()
+            .MaximumLength(100)
+            .WithMessage("Full name is required and cannot exceed 100 characters.");
+
+        RuleFor(x => x.PhoneNumber)
+            .Matches(@"^(\+84|84|0)?[0-9]{9,10}$")
+            .WithMessage("Invalid phone number format.")
+            .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
+    }
+}

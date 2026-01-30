@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace BookStation.Application
 {
@@ -7,13 +8,13 @@ namespace BookStation.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            var currentAssembly = typeof(DependencyInjection).Assembly;
+            var assembly = Assembly.GetExecutingAssembly();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(currentAssembly));
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
             
-            services.AddValidatorsFromAssembly(currentAssembly);
+            services.AddValidatorsFromAssembly(assembly);
             // Register application services here
             return services;
         }
-    }   
+    }
 }

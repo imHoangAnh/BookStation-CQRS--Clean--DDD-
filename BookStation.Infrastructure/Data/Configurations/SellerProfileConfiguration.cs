@@ -45,8 +45,9 @@ public class SellerProfileConfiguration : IEntityTypeConfiguration<SellerProfile
         });
 
         // Other properties
-        builder.Property(sp => sp.IsApproved)
-            .IsRequired();
+        builder.Property(sp => sp.Status)
+            .IsRequired()
+            .HasConversion<string>();
 
         builder.Property(sp => sp.OrganizationId);
 

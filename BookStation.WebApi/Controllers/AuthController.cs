@@ -1,6 +1,7 @@
 ﻿using BookStation.Application.Commands.Login;
 using BookStation.Application.Commands.UpdateProfile;
 using BookStation.Application.Commands.Register;
+using BookStation.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -104,7 +105,14 @@ public class AuthController : ControllerBase
 
         try
         {
-            var command = new UpdateProfileCommand(userId, request.FullName, request.Phone);
+            var command = new UpdateProfileCommand(
+                userId, 
+                request.FullName, 
+                request.Phone,
+                request.DateOfBirth,
+                request.Gender,
+                request.Bio
+            );
             var result = await _mediator.Send(command);
             return Ok(result);
         }
@@ -146,5 +154,11 @@ public class AuthController : ControllerBase
 }
 
 // Request DTOs
-public record UpdateProfileRequest(string? FullName, string? Phone);
+public record UpdateProfileRequest(
+    string? FullName, 
+    string? Phone, 
+    DateTime? DateOfBirth = null, 
+    Gender? Gender = null, 
+    string? Bio = null
+);
 public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);

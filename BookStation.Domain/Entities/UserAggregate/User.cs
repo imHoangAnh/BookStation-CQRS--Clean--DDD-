@@ -14,10 +14,13 @@ public class User : AggregateRoot<Guid>
 
     public Email Email { get; private set; } = default!;
     public string FullName { get; private set; } = string.Empty;
-    public PhoneNumber? PhoneNumber { get; private set; } // Thêm dấu ?
+    public PhoneNumber? PhoneNumber { get; private set; } 
     public PasswordHash PasswordHash { get; private set; } = default!;
     public bool IsVerified { get; private set; }
     public UserStatus Status { get; private set; }
+    public DateTime? DateOfBirth { get; private set; }
+    public Gender? Gender { get; private set; }
+    public string? Bio { get; private set; }
     public SellerProfile? SellerProfile { get; private set; }
     
 
@@ -47,7 +50,7 @@ public class User : AggregateRoot<Guid>
             PhoneNumber = phonenumber!, // hoặc default! nếu nullable trong entity
             PasswordHash = password,
             IsVerified = false, // mac dinh la chua xac thuc 
-            Status = UserStatus.Pending  // mac dinh la dang cho xet duyet
+            Status = UserStatus.Active  // mac dinh la dang cho xet duyet
         };
 
         // Raise domain event để các subscriber khác xử lý
@@ -61,10 +64,18 @@ public class User : AggregateRoot<Guid>
     /// <summary>
     /// Updates the user's profile information.
     /// </summary>
-    public void UpdateProfile(string? fullName, PhoneNumber? phonenumber)
+    public void UpdateProfile(
+        string? fullName, 
+        PhoneNumber? phonenumber,
+        DateTime? dateOfBirth = null,
+        Gender? gender = null,
+        string? bio = null)
     {
         FullName = fullName ?? FullName;
         PhoneNumber = phonenumber;
+        DateOfBirth = dateOfBirth ?? DateOfBirth;
+        Gender = gender ?? Gender;
+        Bio = bio ?? Bio;
         UpdatedAt = DateTime.UtcNow;
 
         AddDomainEvent(new UserUpdatedEvent(Id, nameof(UpdateProfile)));

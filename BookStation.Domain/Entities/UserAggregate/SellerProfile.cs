@@ -11,7 +11,7 @@ namespace BookStation.Domain.Entities.UserAggregate;
 
 public class SellerProfile : Entity<Guid>
 {
-    public bool IsApproved { get; private set; }
+    public SellerStatus Status { get; private set; }
     public int? OrganizationId { get; private set; }
     public DateTime? DateOfBirth { get; private set; }
     public Gender? Gender { get; private set; }
@@ -30,7 +30,7 @@ public class SellerProfile : Entity<Guid>
         return new SellerProfile
         {
             Id = userId,
-            IsApproved = false,
+            Status = SellerStatus.Pending,
             OrganizationId = organiztionId,
             CreatedAt = DateTime.UtcNow
         };
@@ -45,13 +45,24 @@ public class SellerProfile : Entity<Guid>
     }
     public void ApproveSeller()
     {
-        if (IsApproved) return;
-        IsApproved = true;
+        if (Status == SellerStatus.Active) return;
+        Status = SellerStatus.Active;
+        ApprovedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
     public void RejectSeller()
     {
-        IsApproved = false;
+        Status = SellerStatus.Rejected;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void SuspendSeller(string reason)
+    {
+        Status = SellerStatus.Suspended;
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void BanSeller(string reason)
+    {
+        Status = SellerStatus.Banned;
         UpdatedAt = DateTime.UtcNow;
     }
     public void SetOrganization(int? organizationId)

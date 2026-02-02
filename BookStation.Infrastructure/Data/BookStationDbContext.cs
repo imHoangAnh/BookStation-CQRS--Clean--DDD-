@@ -1,4 +1,4 @@
-using BookStation.Domain.Entities.UserAggregate;
+﻿using BookStation.Domain.Entities.UserAggregate;
 using BookStation.Core.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,8 +6,7 @@ namespace BookStation.Infrastructure.Data;
 
 public class BookStationDbContext : DbContext
 {
-    public BookStationDbContext(DbContextOptions<BookStationDbContext> options)
-        : base(options)
+    public BookStationDbContext(DbContextOptions<BookStationDbContext> options) : base(options)
     {
     }
 
@@ -39,3 +38,9 @@ public class BookStationDbContext : DbContext
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
+
+//1.	Khi gọi SaveChangesAsync()
+//2.	Tự động set CreatedAt cho entities mới
+//3.	Tự động set UpdatedAt cho tất cả entities thay đổi
+//4.	Lưu vào database
+//5.	Trả về số records đã lưu

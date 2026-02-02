@@ -34,7 +34,13 @@ public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand,
             phoneNumber = PhoneNumber.Create(request.PhoneNumber);
         }
 
-        user.UpdateProfile(request.FullName, phoneNumber);
+        user.UpdateProfile(
+            request.FullName, 
+            phoneNumber,
+            request.DateOfBirth,
+            request.Gender,
+            request.Bio
+        );
 
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -45,6 +51,9 @@ public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand,
             Email = user.Email.Value,
             FullName = user.FullName,
             PhoneNumber = user.PhoneNumber?.Value,
+            DateOfBirth = user.DateOfBirth,
+            Gender = user.Gender,
+            Bio = user.Bio,
             UpdatedAt = DateTime.UtcNow
         };
     }

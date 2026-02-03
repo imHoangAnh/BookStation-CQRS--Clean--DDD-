@@ -156,7 +156,7 @@ public class AuthController : ControllerBase
             {
                 UserId = userId,
                 CurrentPassword = request.CurrentPassword,
-                NewPassword = request.NewPassword
+                NewPassword = request.NewPassword,
             };
             await _mediator.Send(command);
             return Ok(new { message = "Password changed successfully." });

@@ -84,7 +84,7 @@ public sealed partial class Password : ValueObject
         yield return Value;
     }
 
-    public override string ToString() => "********"; // Never expose password in logs
+    public override string ToString() => "********"; // Never show password in logs
 
     public static implicit operator string(Password password) => password.Value;
 

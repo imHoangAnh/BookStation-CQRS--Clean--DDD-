@@ -55,3 +55,6 @@ public sealed partial class PasswordHash : ValueObject
     [GeneratedRegex(@"^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$", RegexOptions.Compiled)]
     private static partial Regex BcryptHashRegex();
 }
+
+
+// la lop bao ve cuoi cung truoc khi luu vao database

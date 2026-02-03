@@ -21,6 +21,7 @@ public class User : AggregateRoot<Guid>
     public DateTime? DateOfBirth { get; private set; }
     public Gender? Gender { get; private set; }
     public string? Bio { get; private set; }
+    public string? AvatarUrl { get; private set; }
     public SellerProfile? SellerProfile { get; private set; }
     
 
@@ -79,6 +80,12 @@ public class User : AggregateRoot<Guid>
         UpdatedAt = DateTime.UtcNow;
 
         AddDomainEvent(new UserUpdatedEvent(Id, nameof(UpdateProfile)));
+    }
+    public void UpdateAvatar(string avatarUrl)
+    {
+        AvatarUrl = avatarUrl;
+        UpdatedAt = DateTime.UtcNow;
+        AddDomainEvent(new UserUpdatedEvent(Id, nameof(UpdateAvatar)));
     }
 
     /// <summary>
@@ -160,34 +167,19 @@ public class User : AggregateRoot<Guid>
         AddDomainEvent(new UserBannedEvent(Id, reason));
     }
 
+
     /// <summary>
     /// Creates a seller profile for this user.
     /// </summary>
-    //public SellerProfile BecomeASeller(int? organizationId = null)
-    //{
-    //    if (SellerProfile != null)
-    //        throw new InvalidOperationException("User is already a seller.");
+    public SellerProfile BecomeASeller()
+    {
+        if (SellerProfile != null)
+            throw new InvalidOperationException("User is already a seller.");
 
-    //    SellerProfile = SellerProfile.Create(Id, organizationId);
+        SellerProfile = SellerProfile.Create(Id);
 
-    //    AddDomainEvent(new UserBecameSellerEvent(Id));
+        AddDomainEvent(new UserBecameSellerEvent(Id));
 
-    //    return SellerProfile;
-    //}
-
-    ///// <summary>
-    ///// Creates a shipper profile for this user.
-    ///// </summary>
-    //public ShipperProfile BecomeAShipper(int organizationId)
-    //{
-    //    if (ShipperProfile != null)
-    //        throw new InvalidOperationException("User is already a shipper.");
-
-    //    ShipperProfile = ShipperProfile.Create(Id, organizationId);
-
-    //    return ShipperProfile;
-    //}
-
-
-
+        return SellerProfile;
+    }
 }

@@ -49,8 +49,6 @@ public class SellerProfileConfiguration : IEntityTypeConfiguration<SellerProfile
             .IsRequired()
             .HasConversion<string>();
 
-        builder.Property(sp => sp.OrganizationId);
-
         builder.Property(sp => sp.DateOfBirth);
 
         builder.Property(sp => sp.Gender)

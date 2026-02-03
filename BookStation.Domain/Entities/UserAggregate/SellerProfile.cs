@@ -23,15 +23,15 @@ public class SellerProfile : Entity<Guid>
     private SellerProfile() { }
 
     /// <summary>
-    /// Create a new seller profile. Tai day bat buoc phai su dung internal tai vi seller khong duoc phep tao truc tiep ma phai tao thong qua User (Seller nay la con cua User)
+    /// Create a new seller profile. Tai day bat buoc phai su dung internal tai vi seller khong duoc phep tao 
+    /// truc tiep ma phai tao thong qua User (Seller nay la con cua User)
     /// </summary>
-    internal static SellerProfile Create(Guid userId, int? organiztionId)
+    internal static SellerProfile Create(Guid userId)
     {
         return new SellerProfile
         {
             Id = userId,
             Status = SellerStatus.Pending,
-            OrganizationId = organiztionId,
             CreatedAt = DateTime.UtcNow
         };
     }
@@ -43,6 +43,11 @@ public class SellerProfile : Entity<Guid>
         Address = address;
         UpdatedAt = DateTime.UtcNow;
     }
+
+
+    /// <summary>
+    /// Admin
+    /// </summary>
     public void ApproveSeller()
     {
         if (Status == SellerStatus.Active) return;
@@ -65,10 +70,4 @@ public class SellerProfile : Entity<Guid>
         Status = SellerStatus.Banned;
         UpdatedAt = DateTime.UtcNow;
     }
-    public void SetOrganization(int? organizationId)
-    {
-        OrganizationId = organizationId;
-        UpdatedAt = DateTime.UtcNow;
-    }
-
 }

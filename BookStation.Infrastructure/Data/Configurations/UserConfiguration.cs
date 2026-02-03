@@ -52,12 +52,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsVerified)
             .IsRequired();
 
-        // Status - Enum
+        // Status
         builder.Property(u => u.Status)
             .HasConversion<string>()
             .HasMaxLength(50)
             .IsRequired();
 
+        builder.Property(u => u.AvatarUrl)
+            .HasMaxLength(500);
+        
         // Timestamps
         builder.Property(u => u.CreatedAt)
             .IsRequired();

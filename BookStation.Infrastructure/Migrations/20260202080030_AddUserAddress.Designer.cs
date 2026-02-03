@@ -4,6 +4,7 @@ using BookStation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStation.Infrastructure.Migrations
 {
     [DbContext(typeof(BookStationDbContext))]
-    partial class BookStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260202080030_AddUserAddress")]
+    partial class AddUserAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,10 @@ namespace BookStation.Infrastructure.Migrations
                     b.Property<string>("IdNumber")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-                                    
+
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,6 +102,61 @@ namespace BookStation.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("BookStation.Domain.Entities.UserAggregate.UserAddress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDefaultBilling")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsDefaultShipping")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId", "IsActive");
+
+                    b.HasIndex("UserId", "IsDefaultBilling")
+                        .HasFilter("[IsActive] = 1");
+
+                    b.HasIndex("UserId", "IsDefaultShipping")
+                        .HasFilter("[IsActive] = 1");
+
+                    b.ToTable("UserAddresses", (string)null);
                 });
 
             modelBuilder.Entity("BookStation.Domain.Entities.UserAggregate.SellerProfile", b =>
@@ -155,6 +216,25 @@ namespace BookStation.Infrastructure.Migrations
 
             modelBuilder.Entity("BookStation.Domain.Entities.UserAggregate.User", b =>
                 {
+                    b.OwnsOne("BookStation.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)")
+                                .HasColumnName("PhoneNumber");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsOne("BookStation.Domain.ValueObjects.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -196,25 +276,6 @@ namespace BookStation.Infrastructure.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("BookStation.Domain.ValueObjects.PhoneNumber", "PhoneNumber", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)")
-                                .HasColumnName("PhoneNumber");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
                     b.Navigation("Email")
                         .IsRequired();
 
@@ -224,8 +285,88 @@ namespace BookStation.Infrastructure.Migrations
                     b.Navigation("PhoneNumber");
                 });
 
+            modelBuilder.Entity("BookStation.Domain.Entities.UserAggregate.UserAddress", b =>
+                {
+                    b.HasOne("BookStation.Domain.Entities.UserAggregate.User", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("BookStation.Domain.ValueObjects.Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("UserAddressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Country");
+
+                            b1.Property<string>("PostalCode")
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)")
+                                .HasColumnName("PostalCode");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)")
+                                .HasColumnName("Street");
+
+                            b1.Property<string>("Ward")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("Ward");
+
+                            b1.HasKey("UserAddressId");
+
+                            b1.ToTable("UserAddresses");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserAddressId");
+                        });
+
+                    b.OwnsOne("BookStation.Domain.ValueObjects.PhoneNumber", "RecipientPhone", b1 =>
+                        {
+                            b1.Property<Guid>("UserAddressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)")
+                                .HasColumnName("RecipientPhone");
+
+                            b1.HasKey("UserAddressId");
+
+                            b1.ToTable("UserAddresses");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserAddressId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("RecipientPhone")
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BookStation.Domain.Entities.UserAggregate.User", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("SellerProfile");
                 });
 #pragma warning restore 612, 618

@@ -18,7 +18,7 @@ public static class DependencyInjection
         services.AddDbContext<BookStationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-        // Register BookStationDbContext as DbContext too (for generic usage)
+        // Register BookStationDbContext as DbContext (for generic usage)
         services.AddScoped<DbContext>(sp => sp.GetRequiredService<BookStationDbContext>());
 
         // Unit of Work
@@ -30,6 +30,8 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ICloudinaryService, CloudinaryService>();
+
 
         return services;
     }

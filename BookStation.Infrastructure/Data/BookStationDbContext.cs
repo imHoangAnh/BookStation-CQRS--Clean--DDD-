@@ -11,6 +11,7 @@ public class BookStationDbContext : DbContext
     }
 
     public DbSet<User> Users => Set<User>();
+    public DbSet<AddressWallet> AddressWallets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

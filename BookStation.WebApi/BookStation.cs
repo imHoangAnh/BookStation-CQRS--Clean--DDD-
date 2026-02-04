@@ -52,11 +52,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
+    app.UseSwaggerUI(
+        options =>{
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "BookStation API");
         options.RoutePrefix = string.Empty; // Swagger UI at root URL
-    });
+        }
+    );
 }
 
 app.UseHttpsRedirection();

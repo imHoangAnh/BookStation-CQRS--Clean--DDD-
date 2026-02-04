@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using BookStation.Application.Behavior;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -14,6 +16,7 @@ namespace BookStation.Application
             
             services.AddValidatorsFromAssembly(assembly);
             // Register application services here
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             return services;
         }
     }

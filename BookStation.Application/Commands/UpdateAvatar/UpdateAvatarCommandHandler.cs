@@ -5,8 +5,10 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
-public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, string>
+public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, UpdateAvatarResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +19,7 @@ public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, s
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<string> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateAvatarResult> Handle(UpdateAvatarCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByIdAsync(request.UserId, cancellationToken);
         if (user == null)
@@ -28,6 +30,11 @@ public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, s
         _userRepository.Update(user);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return user.AvatarUrl!;
+        return new UpdateAvatarResult
+        {
+            UserId = user.Id,
+            AvatarUrl = user.AvatarUrl!,
+            UpdatedAt = DateTime.UtcNow
+        };
     }
 }

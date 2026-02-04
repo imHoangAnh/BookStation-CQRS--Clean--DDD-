@@ -45,18 +45,18 @@ public class UserRepository : IUserRepository
             .AnyAsync(u => u.Email.Value == email.ToLowerInvariant(), cancellation);
     }
 
-    public async Task<User?> GetWithRolesAsync(Guid id, CancellationToken cancellation = default)
-    {
-        return await _dbContext.Users
-            .FirstOrDefaultAsync(u => u.Id == id, cancellation);
-    }
+    //public async Task<User?> GetWithRolesAsync(Guid id, CancellationToken cancellation = default)
+    //{
+    //    return await _dbContext.Users
+    //        .FirstOrDefaultAsync(u => u.Id == id, cancellation);
+    //}
 
-    public async Task<User?> GetWithSellerProfileAsync(Guid id, CancellationToken cancellation = default)
-    {
-        return await _dbContext.Users
-            .Include(u => u.SellerProfile)
-            .FirstOrDefaultAsync(u => u.Id == id, cancellation);
-    }
+    //public async Task<User?> GetWithSellerProfileAsync(Guid id, CancellationToken cancellation = default)
+    //{
+    //    return await _dbContext.Users
+    //        .Include(u => u.SellerProfile)
+    //        .FirstOrDefaultAsync(u => u.Id == id, cancellation);
+    //}
 
     public void Update(User entity)
     {

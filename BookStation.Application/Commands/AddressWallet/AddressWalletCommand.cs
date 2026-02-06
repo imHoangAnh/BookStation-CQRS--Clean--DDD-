@@ -45,7 +45,6 @@ public record DeleteAddressWalletCommand : IRequest
     public required Guid AddressId { get; init; }
     public required Guid UserId { get; init; }
 }
-
 public record AddressWalletResult
 {
     public Guid Id { get; init; }

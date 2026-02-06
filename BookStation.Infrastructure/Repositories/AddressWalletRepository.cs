@@ -12,22 +12,22 @@ namespace BookStation.Infrastructure.Repositories;
 
 public class AddressWalletRepository : IAddressWalletRepository
 {
-    private readonly BookStationDbContext _context;
+    private readonly BookStationDbContext _dbContext;
 
     public AddressWalletRepository(BookStationDbContext context)
     {
-        _context = context;
+        _dbContext = context;
     }
 
     public async Task<AddressWallet?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.AddressWallets
+        return await _dbContext.AddressWallets
             .FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
     }
 
     public async Task<List<AddressWallet>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await _context.AddressWallets
+        return await _dbContext.AddressWallets
             .Where(a => a.UserId == userId)
             .OrderByDescending(a => a.IsDefault)
             .ThenByDescending(a => a.CreatedAt)
@@ -36,23 +36,23 @@ public class AddressWalletRepository : IAddressWalletRepository
 
     public async Task<AddressWallet?> GetDefaultByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await _context.AddressWallets
+        return await _dbContext.AddressWallets
             .FirstOrDefaultAsync(a => a.UserId == userId && a.IsDefault, cancellationToken);
     }
 
     public async Task AddAsync(AddressWallet address, CancellationToken cancellationToken = default)
     {
-        await _context.AddressWallets.AddAsync(address, cancellationToken);
+        await _dbContext.AddressWallets.AddAsync(address, cancellationToken);
     }
 
     public void Update(AddressWallet address)
     {
-        _context.AddressWallets.Update(address);
+        _dbContext.AddressWallets.Update(address);
     }
 
     public void Delete(AddressWallet address)
     {
-        _context.AddressWallets.Remove(address);
+        _dbContext.AddressWallets.Remove(address);
     }
 }
 

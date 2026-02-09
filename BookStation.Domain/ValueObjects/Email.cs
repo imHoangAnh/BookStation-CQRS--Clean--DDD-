@@ -57,6 +57,6 @@ public sealed partial class Email : ValueObject
 
     public static implicit operator string(Email email) => email.Value; // chuyen kieu tu dong 
 
-    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
+    [GeneratedRegex(@"^[a-z0-9]+([._+-][a-z0-9]+)*@[a-z0-9]+([.-][a-z0-9]+)*\.[a-z]{2,}$",RegexOptions.Compiled | RegexOptions.IgnoreCase)]
     private static partial Regex EmailRegex();
 }

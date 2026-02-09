@@ -53,6 +53,7 @@ public class AddressWalletRepository : IAddressWalletRepository
     public void Delete(AddressWallet address)
     {
         _dbContext.AddressWallets.Remove(address);
+
     }
 }
 

@@ -1,190 +1,159 @@
-﻿//using BookStation.Core.SharedKernel;
-//using System.Text.RegularExpressions;
+﻿using BookStation.Core.SharedKernel;
 
-//namespace BookStation.Domain.ValueObjects;
+namespace BookStation.Domain.ValueObjects;
 
-///// <summary>
-///// Value object ISBN (International Standard Book Number).
-///// Supports both ISBN-10 and ISBN-13 formats with validation.
-///// Before 2007, ISBNs were 10 digits long. Since January 1, 2007, ISBNs have been 13 digits long.
-///// </summary>
-//public sealed partial class ISBN : ValueObject
-//{
-//    private const int ISBN10_LENGTH = 10;
-//    private const int ISBN13_LENGTH = 13;
+/// <summary>
+/// Value object for ISBN-13 (International Standard Book Number).
+/// Since January 1, 2007, all ISBNs are 13 digits long.
+/// </summary>
+public sealed class ISBN : ValueObject
+{
+    private const int ISBN_LENGTH = 13;
 
-//    /// <summary>
-//    /// Gets the normalized ISBN value (without hyphens or spaces).
-//    /// </summary>
-//    public string Value { get; }
+    /// <summary>
+    /// Gets the normalized ISBN-13 value (without hyphens or spaces).
+    /// </summary>
+    public string Value { get; }
 
-//    /// <summary>
-//    /// Gets the ISBN type (10 or 13 digits).
-//    /// </summary>
-//    public IsbnType Type { get; }
+    private string? _formattedCache;
 
-//    private string? _formattedCache;
+    private ISBN(string value)
+    {
+        Value = value;
+    }
 
-//    private ISBN(string value, IsbnType type)
-//    {
-//        Value = value;
-//        Type = type;
-//    }
+    /// <summary>
+    /// Creates a new ISBN-13 value object.
+    /// </summary>
+    /// <exception cref="ArgumentException">Thrown when ISBN is invalid.</exception>
+    public static ISBN Create(string isbn)
+    {
+        if (string.IsNullOrWhiteSpace(isbn))
+            throw new ArgumentException("ISBN cannot be empty.", nameof(isbn));
 
-//    /// <summary>
-//    /// Creates a new ISBN value object.
-//    /// </summary>
-//    /// <exception> ArgumentException --> Thrown when ISBN is invalid.</exception>
-//    public static ISBN Create(string isbn)
-//    {
-//        if (string.IsNullOrWhiteSpace(isbn))
-//            throw new ArgumentException("ISBN cannot be empty.", nameof(isbn));
+        var cleaned = NormalizeIsbn(isbn);
 
-//        var cleaned = NormalizeIsbn(isbn);
+        if (IsValidIsbn13(cleaned))
+            return new ISBN(cleaned);
 
-//        if (TryValidateIsbn(cleaned, out var type))
-//            return new ISBN(cleaned, type);
+        throw new ArgumentException($"Invalid ISBN-13 format: {isbn}", nameof(isbn));
+    }
 
-//        throw new ArgumentException($"ISBN format is invalid: {isbn}", nameof(isbn));
-//    }
+    /// <summary>
+    /// Tries to create a new ISBN-13 value object.
+    /// </summary>
+    public static bool TryCreate(string? isbn, out ISBN? result)
+    {
+        result = null;
 
-//    /// <summary>
-//    /// Tries to create a new ISBN value object.
-//    /// </summary>
-//    public static bool TryCreate(string? isbn, out ISBN? result)
-//    {
-//        result = null;
+        if (string.IsNullOrWhiteSpace(isbn))
+            return false;
 
-//        if (string.IsNullOrWhiteSpace(isbn))
-//            return false;
+        var cleaned = NormalizeIsbn(isbn);
 
-//        try
-//        {
-//            var cleaned = NormalizeIsbn(isbn);
+        if (IsValidIsbn13(cleaned))
+        {
+            result = new ISBN(cleaned);
+            return true;
+        }
 
-//            if (TryValidateIsbn(cleaned, out var type))
-//            {
-//                result = new ISBN(cleaned, type);
-//                return true;
-//            }
-//        }
-//        catch
-//        {
-//            // Swallow exceptions for TryCreate pattern
-//        }
+        return false;
+    }
 
-//        return false;
-//    }
+    /// <summary>
+    /// Normalizes ISBN by removing hyphens and spaces.
+    /// </summary>
+    private static string NormalizeIsbn(string isbn)
+    {
+        Span<char> buffer = stackalloc char[isbn.Length];
+        int index = 0;
 
-//    private static string NormalizeIsbn(string isbn)
-//    {
-//        // Use Span<char> for better performance if dealing with many ISBNs
-//        return isbn.Replace("-", "", StringComparison.Ordinal)
-//                   .Replace(" ", "", StringComparison.Ordinal);
-//    }
+        foreach (char c in isbn)
+        {
+            if (c != '-' && c != ' ')
+            {
+                buffer[index++] = c;
+            }
+        }
 
-//    private static bool TryValidateIsbn(string isbn, out IsbnType type)
-//    {
-//        type = IsbnType.Unknown;
+        return new string(buffer[..index]);
+    }
 
-//        return isbn.Length switch
-//        {
-//            ISBN10_LENGTH when IsValidIsbn10(isbn) => SetType(out type, IsbnType.Isbn10),
-//            ISBN13_LENGTH when IsValidIsbn13(isbn) => SetType(out type, IsbnType.Isbn13),
-//            _ => false
-//        };
+    /// <summary>
+    /// Validates ISBN-13 format and checksum.
+    /// </summary>
+    private static bool IsValidIsbn13(ReadOnlySpan<char> isbn)
+    {
+        // Must be exactly 13 characters
+        if (isbn.Length != ISBN_LENGTH)
+            return false;
 
-//        static bool SetType(out IsbnType t, IsbnType value)
-//        {
-//            t = value;
-//            return true;
-//        }
-//    }
+        // Calculate checksum and validate format in one pass
+        int sum = 0;
+        for (int i = 0; i < ISBN_LENGTH; i++)
+        {
+            char c = isbn[i];
 
-//    private static bool IsValidIsbn10(string isbn)
-//    {
-//        if (!Isbn10Regex().IsMatch(isbn))
-//            return false;
+            // Must be a digit
+            if (!char.IsDigit(c))
+                return false;
 
-//        int sum = 0;
+            // Calculate checksum (alternating weights: 1, 3, 1, 3, ...)
+            int digit = c - '0';
+            sum += (i & 1) == 0 ? digit : digit * 3;
+        }
 
-//        for (int i = 0; i < 9; i++)
-//        {
-//            sum += (isbn[i] - '0') * (10 - i);
-//        }
+        // Checksum must be divisible by 10
+        return sum % 10 == 0;
+    }
 
-//        char lastChar = isbn[9];
-//        int checkDigit = lastChar is 'X' or 'x' ? 10 : lastChar - '0';
+    /// <summary>
+    /// Gets the formatted ISBN-13 with hyphens (cached for performance).
+    /// Format: 978-0-306-40615-7
+    /// </summary>
+    public string Formatted => _formattedCache ??= FormatIsbn13();
 
-//        return (sum + checkDigit) % 11 == 0;
-//    }
+    private string FormatIsbn13()
+    {
+        // Format: 978-0-306-40615-7 (13 digits + 4 hyphens = 17 chars)
+        Span<char> buffer = stackalloc char[17];
 
-//    private static bool IsValidIsbn13(string isbn)
-//    {
-//        if (!Isbn13Regex().IsMatch(isbn))
-//            return false;
+        // Prefix (3 digits): 978 or 979
+        Value.AsSpan(0, 3).CopyTo(buffer);
+        buffer[3] = '-';
 
-//        int sum = 0;
+        // Registration group (1 digit - simplified)
+        buffer[4] = Value[3];
+        buffer[5] = '-';
 
-//        for (int i = 0; i < 13; i++)
-//        {
-//            int digit = isbn[i] - '0';
-//            sum += (i & 1) == 0 ? digit : digit * 3; // Bitwise check for even/odd
-//        }
+        // Registrant (4 digits - simplified)
+        Value.AsSpan(4, 4).CopyTo(buffer[6..]);
+        buffer[10] = '-';
 
-//        return sum % 10 == 0;
-//    }
+        // Publication (4 digits - simplified)
+        Value.AsSpan(8, 4).CopyTo(buffer[11..]);
+        buffer[15] = '-';
 
-//    /// <summary>
-//    /// Gets the formatted ISBN with hyphens (cached for performance).
-//    /// </summary>
-//    public string Formatted => _formattedCache ??= FormatIsbn();
+        // Check digit (1 digit)
+        buffer[16] = Value[12];
 
-//    private string FormatIsbn()
-//    {
-//        return Type switch
-//        {
-//            IsbnType.Isbn13 => $"{Value[..3]}-{Value[3]}-{Value.Substring(4, 4)}-{Value.Substring(8, 4)}-{Value[12]}",
-//            IsbnType.Isbn10 => $"{Value[0]}-{Value.Substring(1, 4)}-{Value.Substring(5, 4)}-{Value[9]}",
-//            _ => Value
-//        };
-//    }
+        return new string(buffer);
+    }
 
-//    /// <summary>
-//    /// Checks if this ISBN is in ISBN-13 format.
-//    /// </summary>
-//    public bool IsIsbn13 => Type == IsbnType.Isbn13;
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Value;
+    }
 
-//    /// <summary>
-//    /// Checks if this ISBN is in ISBN-10 format.
-//    /// </summary>
-//    public bool IsIsbn10 => Type == IsbnType.Isbn10;
+    public override string ToString() => Formatted;
 
-//    protected override IEnumerable<object?> GetEqualityComponents()
-//    {
-//        yield return Value;
-//    }
-
-//    public override string ToString() => Formatted;
-
-//    public static implicit operator string(ISBN isbn) => isbn.Value;
-
-//    [GeneratedRegex(@"^[0-9]{9}[0-9Xx]$", RegexOptions.Compiled)]
-//    private static partial Regex Isbn10Regex();
-
-//    [GeneratedRegex(@"^[0-9]{13}$", RegexOptions.Compiled)]
-//    private static partial Regex Isbn13Regex();
-//}
-
-///// <summary>
-///// Represents the type of ISBN format.
-///// </summary>
-//public enum IsbnType
-//{
-//    Unknown = 0,
-//    Isbn10 = 10,
-//    Isbn13 = 13
-//}
+    public static implicit operator string(ISBN isbn) => isbn.Value;
+}
 
 
-
+/// <summary>
+/// ISBN-13 dựa trên chuẩn EAN-13 (European Article Number)
+/// → EAN-13 dùng mod 10
+/// → Tương thích với barcode quốc tế
+/// → Dễ tích hợp với hệ thống bán lẻ toàn cầu
+/// </summary>

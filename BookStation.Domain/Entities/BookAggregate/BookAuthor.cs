@@ -2,30 +2,11 @@
 
 namespace BookStation.Domain.Entities.CatalogAggregate;
 
-/// <summary>
-/// Junction entity for Book-Author many-to-many relationship.
-/// </summary>
+// Entity for Book-Author many-to-many relationship.
 public class BookAuthor
 {
-    /// <summary>
-    /// Gets the book ID.
-    /// </summary>
     public long BookId { get; private set; }
-
-    /// <summary>
-    /// Gets the author ID.
-    /// </summary>
-    public long AuthorId { get; private set; }
-
-    /// <summary>
-    /// Gets the author's role in this book.
-    /// </summary>
-    public AuthorRole Role { get; private set; }
-
-    /// <summary>
-    /// Gets the display order (for ordering multiple authors).
-    /// </summary>
-    public int DisplayOrder { get; private set; }
+    public Guid AuthorId { get; private set; }
 
     // Navigation properties
     public Book? Book { get; private set; }

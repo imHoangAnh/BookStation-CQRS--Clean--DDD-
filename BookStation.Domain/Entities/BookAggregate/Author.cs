@@ -13,12 +13,10 @@ public class Author : Entity<Guid>
     public DateTime? DiedDate { get; private set; }
     public string? Address { get; private set; }
     public string? Country { get; private set; }
-    // Gets the user ID if the author has an account.
-    public Guid? UserId { get; private set; }
     // Gets the author's photo URL.
     public string? PhotoUrl { get; private set; }
 
-    // Navigation properties
+    // Navigation properties - using backing fields + IReadOnlyList to prevent noone can modify the collection outside the aggregate. 
     private readonly List<BookAuthor> _bookAuthors = [];
     public IReadOnlyList<BookAuthor> BookAuthors => _bookAuthors.AsReadOnly();
 
@@ -69,17 +67,4 @@ public class Author : Entity<Guid>
         UpdatedAt = DateTime.UtcNow;
     }
 
-    /// <summary>
-    /// Links this author to a user account.
-    /// </summary>
-    public void LinkToUser(Guid userId)
-    {
-        UserId = userId;
-        UpdatedAt = DateTime.UtcNow;
-    }
-
-    /// <summary>
-    /// Gets the number of books by this author.
-    /// </summary>
-    public int BookCount => _bookAuthors.Count;
 }

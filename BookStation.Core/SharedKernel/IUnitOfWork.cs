@@ -9,8 +9,21 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// Day tat cac cac thay doi dang cho tu bo nho xuong co so du lieu 
     /// </summary>
-    /// <returns></returns>
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Begins a new transaction.
+    /// </summary>
+    Task BeginTransactionAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Commits the current transaction.
+    /// </summary>
+    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Rolls back the current transaction.
+    /// </summary>
+    Task RollbackTransactionAsync();
 }
 
 /// <summary>

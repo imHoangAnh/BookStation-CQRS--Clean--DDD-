@@ -17,6 +17,9 @@ public class Book : AggregateRoot<long>
     public BookStatus Status { get; private set; }
     public string? CoverImageUrl { get; private set; }
     public int? PageCount { get; private set; }
+    public string? CoAuthors { get; private set; }
+    public string? Translators { get; private set; }
+
 
     // Navigation properties
     public Publisher? Publisher { get; private set; }

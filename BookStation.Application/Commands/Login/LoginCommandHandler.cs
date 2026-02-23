@@ -57,3 +57,4 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResult>
         
     }
 }
+//get all get by id, update, get pag

@@ -1,4 +1,7 @@
-﻿using BookStation.Domain.Entities.UserAggregate;
+using BookStation.Domain.Entities.UserAggregate;
+using BookStation.Domain.Entities.BookAggregate;
+using BookStation.Domain.Entities.CartAggregate;
+using BookStation.Domain.Entities.OrderAggregate;
 using BookStation.Core.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,42 +9,49 @@ namespace BookStation.Infrastructure.Data;
 
 public class BookStationDbContext : DbContext
 {
-    public BookStationDbContext(DbContextOptions<BookStationDbContext> options) : base(options)
-    {
-    }
+    public BookStationDbContext(DbContextOptions<BookStationDbContext> options) : base(options) { }
 
+    // UserAggregate
     public DbSet<User> Users => Set<User>();
-    public DbSet<AddressWallet> AddressWallets { get; set; }
+    public DbSet<AddressWallet> AddressWallets => Set<AddressWallet>();
+
+    // BookAggregate
+    public DbSet<Book> Books => Set<Book>();
+    public DbSet<BookVariant> BookVariants => Set<BookVariant>();
+    public DbSet<Author> Authors => Set<Author>();
+    public DbSet<Publisher> Publishers => Set<Publisher>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Inventory> Inventories => Set<Inventory>();
+    public DbSet<BookAuthor> BookAuthors => Set<BookAuthor>();
+    public DbSet<BookCategory> BookCategories => Set<BookCategory>();
+
+    // CartAggregate
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
+
+    // OrderAggregate
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Apply all configurations from current assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(BookStationDbContext).Assembly);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        // Set timestamps before saving
         var entries = ChangeTracker.Entries<Entity<Guid>>()
             .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)
-            {
                 entry.Entity.CreatedAt = DateTime.UtcNow;
-            }
             entry.Entity.UpdatedAt = DateTime.UtcNow;
         }
 
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
-
-//1.	Khi gọi SaveChangesAsync()
-//2.	Tự động set CreatedAt cho entities mới
-//3.	Tự động set UpdatedAt cho tất cả entities thay đổi
-//4.	Lưu vào database
-//5.	Trả về số records đã lưu

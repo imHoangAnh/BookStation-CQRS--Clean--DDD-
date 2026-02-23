@@ -4,6 +4,7 @@ using BookStation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStation.Infrastructure.Migrations
 {
     [DbContext(typeof(BookStationDbContext))]
-    partial class BookStationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260223064118_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -441,9 +444,6 @@ namespace BookStation.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<long>("BookVariantId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -456,6 +456,9 @@ namespace BookStation.Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<long>("VariantId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("VariantName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -463,9 +466,9 @@ namespace BookStation.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookVariantId");
-
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("VariantId");
 
                     b.ToTable("OrderItems", (string)null);
                 });
@@ -923,12 +926,6 @@ namespace BookStation.Infrastructure.Migrations
 
             modelBuilder.Entity("BookStation.Domain.Entities.OrderAggregate.OrderItem", b =>
                 {
-                    b.HasOne("BookStation.Domain.Entities.BookAggregate.BookVariant", "BookVariant")
-                        .WithMany()
-                        .HasForeignKey("BookVariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BookStation.Domain.Entities.OrderAggregate.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
@@ -957,8 +954,6 @@ namespace BookStation.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("OrderItemId");
                         });
-
-                    b.Navigation("BookVariant");
 
                     b.Navigation("Order");
 

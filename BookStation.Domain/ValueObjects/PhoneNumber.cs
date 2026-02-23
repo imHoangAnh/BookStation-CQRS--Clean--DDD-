@@ -46,8 +46,8 @@ public sealed partial class PhoneNumber : ValueObject
         if (cleaned.Length != PhoneLength)
             throw new ArgumentException($"Phone number must have {PhoneLength} digits.", nameof(phone));
 
-        if (!PhoneRegex().IsMatch(cleaned))
-            throw new ArgumentException("Phone number format is invalid.", nameof(phone));
+        //if (!PhoneRegex().IsMatch(cleaned))
+        //    throw new ArgumentException("Phone number format is invalid.", nameof(phone));
 
         return new PhoneNumber(cleaned);
     }
@@ -78,7 +78,6 @@ public sealed partial class PhoneNumber : ValueObject
 
     public static implicit operator string(PhoneNumber phone) => phone.Value;
 
-    [GeneratedRegex(@"^0\d{9}$", RegexOptions.Compiled)]
-    private static partial Regex PhoneRegex();
+   // private static partial Regex PhoneRegex();
 }
 

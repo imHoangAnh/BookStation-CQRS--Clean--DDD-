@@ -16,4 +16,8 @@
     <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\VoucherAggregate\" />
+  </ItemGroup>
+
 </Project>

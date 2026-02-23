@@ -40,10 +40,12 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 
             stopwatch.Stop();
 
+#pragma warning disable CA1873 // Avoid potentially expensive logging
             _logger.LogInformation(
                 "Handled {RequestName} in {ElapsedMilliseconds}ms",
                 requestName,
                 stopwatch.ElapsedMilliseconds);
+#pragma warning restore CA1873 // Avoid potentially expensive logging
 
             return response;
         }

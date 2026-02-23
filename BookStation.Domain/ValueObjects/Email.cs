@@ -22,8 +22,9 @@ public sealed partial class Email : ValueObject
 
     public static Email Create(string email)
     {
+
         if (string.IsNullOrWhiteSpace(email))
-            throw new ArgumentException("Email cannot be empty.", nameof(email));
+            throw new InvalidOperationException("Email cannot be empty.");
 
         if (email.Length > MaxLength)
             throw new ArgumentException($"Email cannot exceed {MaxLength} characters.", nameof(email));

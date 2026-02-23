@@ -1,4 +1,4 @@
-﻿using BookStation.Application.Commands.Address;
+using BookStation.Application.Commands.Address;
 using BookStation.Application.Queries.AddressWallet;
 using BookStation.Domain.Enums;
 using MediatR;
@@ -34,7 +34,7 @@ public class AddressController : ControllerBase
         var userId = GetUserId();
         if (userId == null) return Unauthorized();
 
-        var result = await _mediator.Send(new GetAllAddressesQuery(userId.Value));
+        var result = await _mediator.Send(new GetAllAddressQuery(userId.Value));
         return Ok(result);
     }
 

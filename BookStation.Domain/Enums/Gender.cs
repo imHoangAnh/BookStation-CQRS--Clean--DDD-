@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BookStation.Domain.Enums
+namespace BookStation.Domain.Enums;
+
+public enum Gender
 {
-    public enum Gender
-    {
-        Male = 0,
-        Female = 1,
-        Other = 2
-    }
+    Male = 0,
+    Female = 1,
+    Other = 2
 }

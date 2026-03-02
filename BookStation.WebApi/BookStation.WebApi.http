@@ -1,6 +1,2 @@
 @BookStation.WebApi_HostAddress = http://localhost:5200
 
-GET {{BookStation.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

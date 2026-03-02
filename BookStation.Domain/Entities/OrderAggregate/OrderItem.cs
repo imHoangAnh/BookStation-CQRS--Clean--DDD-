@@ -9,7 +9,7 @@ public class OrderItem : Entity<long>
 {
     public long OrderId { get; private set; }
 
-    [ForeignKey(nameof(BookVariantId))]
+    [ForeignKey(nameof(BookVariant))]
     public long BookVariantId { get; private set; } 
     public int Quantity { get; private set; }
     public Money UnitPrice { get; private set; } = null!;

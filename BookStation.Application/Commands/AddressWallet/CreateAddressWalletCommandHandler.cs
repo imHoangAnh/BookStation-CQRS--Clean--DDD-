@@ -20,6 +20,16 @@ public class CreateAddressWalletCommandHandler : IRequestHandler<CreateAddressWa
         _addressRepository = addressRepository;
         _unitOfWork = unitOfWork;
     }
+    private async Task EnsureSingleDefaultAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var currentDefault = await _addressRepository
+            .GetDefaultByUserIdAsync(userId, cancellationToken);
+
+        if (currentDefault is null) return;
+
+        currentDefault.RemoveDefault();
+        _addressRepository.Update(currentDefault, cancellationToken);
+    }
 
     public async Task<AddressWalletResult> Handle(CreateAddressWalletCommand request, CancellationToken cancellationToken)
     {
@@ -29,10 +39,10 @@ public class CreateAddressWalletCommandHandler : IRequestHandler<CreateAddressWa
             var currentDefault = await _addressRepository.GetDefaultByUserIdAsync(request.UserId, cancellationToken);
             if (currentDefault != null)
             {
-                currentDefault.RemoveDefault();
-                _addressRepository.Update(currentDefault);
+                await EnsureSingleDefaultAsync(request.UserId, cancellationToken);
             }
         }
+
 
         // Create PhoneNumber ValueObject
         var phone = PhoneNumber.Create(request.PhoneNumber);
@@ -77,4 +87,5 @@ public class CreateAddressWalletCommandHandler : IRequestHandler<CreateAddressWa
             IsDefault = addresswallet.IsDefault
         };
     }
+    void Update(DomainAddressWallet entity, CancellationToken cancellationToken);
 }

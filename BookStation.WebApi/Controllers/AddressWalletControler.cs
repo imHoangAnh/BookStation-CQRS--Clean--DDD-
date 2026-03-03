@@ -12,12 +12,12 @@ namespace BookStation.WebApi.Controllers;
 /// Address controller for managing user's address wallet.
 /// </summary>
 [ApiController]
-[Route("address")]
+[Route("api/[controller]")]
 [Authorize]
 public class AddressController : ControllerBase
 {
     private readonly IMediator _mediator;
-
+    protected Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     public AddressController(IMediator mediator)
     {
         _mediator = mediator;
@@ -29,12 +29,9 @@ public class AddressController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(List<AddressWalletResult>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetAllAddresses()
+    public async Task<IActionResult> GetAllAddresses(CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        if (userId == null) return Unauthorized();
-
-        var result = await _mediator.Send(new GetAllAddressQuery(userId.Value));
+        var result = await _mediator.Send(new GetAllAddressQuery(UserId), cancellationToken);
         return Ok(result);
     }
 
@@ -45,29 +42,25 @@ public class AddressController : ControllerBase
     [ProducesResponseType(typeof(AddressWalletResult), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request)
+    public async Task<IActionResult> CreateAddress([FromBody] CreateAddressRequest request, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        if (userId == null) return Unauthorized();
-
         try
         {
-            var command = new CreateAddressWalletCommand
-            {
-                UserId = userId.Value,
-                RecipientName = request.RecipientName,
-                PhoneNumber = request.RecipientPhone,
-                Street = request.Street,
-                Ward = request.Ward,
-                City = request.City,
-                Country = request.Country ?? "Vietnam",
-                PostalCode = request.PostalCode,
-                Label = request.Label,
-                IsDefault = request.IsDefault
-            };
+            var command = new CreateAddressWalletCommand(
+                UserId,
+                request.RecipientName,
+                request.RecipientPhone,
+                request.Street,
+                request.Ward,
+                request.City,
+                request.Country ?? "Vietnam",
+                request.PostalCode,
+                request.Label,
+                request.IsDefault
+            );
 
             var result = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAllAddresses), new { }, result);
+            return CreatedAtAction(nameof(GetAllAddresses), new { }, result);       
         }
         catch (ArgumentException ex)
         {
@@ -83,17 +76,14 @@ public class AddressController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateAddress(Guid id, [FromBody] UpdateAddressRequest request)
+    public async Task<IActionResult> UpdateAddress(Guid id, UpdateAddressRequest request, CancellationToken cancellationToken)
     {
-        var userId = GetUserId();
-        if (userId == null) return Unauthorized();
-
         try
         {
             var command = new UpdateAddressWalletCommand
             {
                 AddressId = id,
-                UserId = userId.Value,
+                UserId = UserId,
                 RecipientName = request.RecipientName,
                 PhoneNumber = request.RecipientPhone,
                 Street = request.Street,
@@ -131,12 +121,9 @@ public class AddressController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAddress(Guid id)
     {
-        var userId = GetUserId();
-        if (userId == null) return Unauthorized();
-
         try
         {
-            await _mediator.Send(new DeleteAddressWalletCommand { AddressId = id, UserId = userId.Value });
+            await _mediator.Send(new DeleteAddressWalletCommand { AddressId = id, UserId = UserId });
             return NoContent();
         }
         catch (InvalidOperationException ex)
@@ -149,13 +136,13 @@ public class AddressController : ControllerBase
         }
     }
 
-    private Guid? GetUserId()
-    {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
-            return null;
-        return userId;
-    }
+    //private Guid? GetUserId()
+    //{
+    //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //    if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+    //        return null;
+    //    return userId;
+    //}
 }
 
 // Request DTOs

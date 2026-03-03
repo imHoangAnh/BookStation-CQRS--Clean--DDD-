@@ -1,7 +1,10 @@
-﻿using BookStation.Application.Contracts;
+using BookStation.Application.Contracts;
+using BookStation.Application.Queries.Books;
+using BookStation.Application.Queries.Orders;
 using BookStation.Core.SharedKernel;
 using BookStation.Domain.Repositories;
 using BookStation.Infrastructure.Data;
+using BookStation.Infrastructure.Queries;
 using BookStation.Infrastructure.Repositories;
 using BookStation.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +35,10 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+        // Query services
+        services.AddScoped<IBookQueryService, BookQueryService>();
+        services.AddScoped<IOrderQueryService, OrderQueryService>();
 
 
         return services;

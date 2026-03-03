@@ -13,7 +13,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BookStation.WebApi.Controllers;
 
@@ -23,7 +22,7 @@ namespace BookStation.WebApi.Controllers;
 /// Handles registration, login, profile management and password change.
 /// </summary>
 [ApiController]
-[Route("")]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;

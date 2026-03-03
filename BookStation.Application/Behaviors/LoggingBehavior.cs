@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 
-namespace BookStation.Application.Behavior;
+namespace BookStation.Application.Behaviors;
 
 /// <summary>
 /// Pipeline behavior for logging command/query execution.

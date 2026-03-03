@@ -1,4 +1,4 @@
-﻿using BookStation.Application.Behavior;
+using BookStation.Application.Behaviors;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-using BookStation.Application.Queries.Common;
+using BookStation.Application.Common;
 using BookStation.Application.Queries.Orders;
 using Microsoft.AspNetCore.Mvc;
 

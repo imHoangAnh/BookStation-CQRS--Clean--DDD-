@@ -1,5 +1,5 @@
 using BookStation.Application.Queries.Books;
-using BookStation.Application.Queries.Common;
+using BookStation.Application.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStation.WebApi.Controllers;

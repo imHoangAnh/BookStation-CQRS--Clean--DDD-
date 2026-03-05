@@ -1,6 +1,6 @@
 using BookStation.Application.Commands.Address;
 using BookStation.Application.Queries.AddressWallet;
-using BookStation.Domain.Enums;
+using BookStation.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,0 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+using MediatR;
+using BookStation.Core.ValueObjects;
+using BookStation.Core.Entities.UserAggregate;
+using BookStation.Core.Repositories;
+using BookStation.Application.Contracts;
+
+namespace BookStation.Application.Commands.Register;
+
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResult>
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IPasswordHasher _passwordHasher;
+    public RegisterCommandHandler(IUserRepository userRepository, IPasswordHasher passwordHasher)
+    {
+        _userRepository = userRepository;
+        _passwordHasher = passwordHasher;
+    }
+
+    public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    {
+            if (await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken))
+            {
+                throw new InvalidOperationException($"Email '{request.Email}' is already registered.");
+            }
+            // Create Email value object
+            var email = Email.Create(request.Email);
+
+            // Create Password value object
+            var password = Password.Create(request.Password);
+
+            // Hash the password
+            var passwordHash = _passwordHasher.HashPassword(password);
+
+            // Create PhoneNumber value object if provided
+            PhoneNumber? phoneNumber = null;
+            if (!string.IsNullOrWhiteSpace(request.PhoneNumber))
+            {
+                phoneNumber = PhoneNumber.Create(request.PhoneNumber);
+            }
+
+            var user = User.Create(email, passwordHash, request.FullName, phoneNumber);
+
+            // Save user to repository
+            await _userRepository.AddAsync(user, cancellationToken);
+            // Return result
+            return new RegisterResult
+            {
+                UserId = user.Id,
+                Email = user.Email.Value,
+                IsVerified = user.IsVerified
+            };
+        
+        // Check if email already exists
+       
+    }
+}
+
+

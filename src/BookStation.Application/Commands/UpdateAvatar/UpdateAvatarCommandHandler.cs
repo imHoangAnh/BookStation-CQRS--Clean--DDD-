@@ -29,7 +29,6 @@ public class UpdateAvatarCommandHandler : IRequestHandler<UpdateAvatarCommand, U
         user.UpdateAvatar(request.AvatarUrl);
 
         _userRepository.Update(user);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new UpdateAvatarResult
         {

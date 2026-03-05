@@ -1,4 +1,4 @@
-﻿using BookStation.Core.Entities.UserAggregate;
+using BookStation.Core.Entities.UserAggregate;
 using BookStation.Core.Repositories;
 using BookStation.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,6 @@ public class UserRepository : IUserRepository
     public async Task AddAsync(User entity, CancellationToken cancellation = default)
     {
         await _dbContext.Users.AddAsync(entity, cancellation);
-        await _dbContext.SaveChangesAsync(cancellation);
     }
 
     public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellation = default)
@@ -44,30 +43,5 @@ public class UserRepository : IUserRepository
     public void Delete(User entity)
     {
         _dbContext.Users.Remove(entity);
-    }
-
-    Task<User?> IUserRepository.GetByEmailAsync(string email, CancellationToken cancellation)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<bool> IUserRepository.ExistsByEmailAsync(string email, CancellationToken cancellation)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task<User?> IUserRepository.GetByIdAsync(Guid userId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IUserRepository.Update(object user)
-    {
-        throw new NotImplementedException();
-    }
-
-    Task IUserRepository.AddAsync(User user, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 }

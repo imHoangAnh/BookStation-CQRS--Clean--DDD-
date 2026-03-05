@@ -1,3 +1,4 @@
+using BookStation.Application.Abstractions;
 using BookStation.Application.Common;
 using BookStation.Application.Queries.Orders;
 using BookStation.Core.Entities.OrderAggregate;
@@ -8,9 +9,9 @@ namespace BookStation.Infrastructure.Queries;
 
 public sealed class OrderQueryService : IOrderQueryService
 {
-    private readonly BookStationDbContext _dbContext;
+    private readonly IReadDbContext _dbContext;
 
-    public OrderQueryService(BookStationDbContext dbContext)
+    public OrderQueryService(IReadDbContext dbContext)
     {
         _dbContext = dbContext;
     }

@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BookStation.Application\BookStation.Application.csproj" />
+    <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
   </ItemGroup>
 
 </Project>

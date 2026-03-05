@@ -44,7 +44,6 @@ public class UpdateProfileCommandHandler : IRequestHandler<UpdateProfileCommand,
         );
 
         _userRepository.Update(user);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new UpdateProfileResult
         {

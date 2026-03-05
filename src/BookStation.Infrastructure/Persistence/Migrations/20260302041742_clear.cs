@@ -5,7 +5,7 @@
 namespace BookStation.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class clear : Migration
+    public partial class Clear : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -40,7 +40,6 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         user.ChangePassword(newPasswordHash);
 
         _userRepository.Update(user);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return new ChangePasswordResult
         {

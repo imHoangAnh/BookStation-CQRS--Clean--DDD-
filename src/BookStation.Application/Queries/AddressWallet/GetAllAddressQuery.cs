@@ -7,13 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStation.Application.Queries.AddressWallet;
 
 
-public record GetAllAddressQuery(Guid UserId, int Page = 1): IRequest<PagedResult<AddressWalletDto>>;
-public class GetAllAddressesQueryHandler
-    : IRequestHandler<GetAllAddressQuery, PagedResult<AddressWalletDto>>
+public record GetAllAddressQuery(Guid UserId, int Page = 1) : IRequest<PagedResult<AddressWalletDto>>;
+public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressQuery, PagedResult<AddressWalletDto>>
 {
     private readonly IReadDbContext _dbContext;
 
@@ -60,7 +60,6 @@ public class GetAllAddressesQueryHandler
             pageSize);
     }
 }
-//public record GetAllAddressQuery(Guid UserId) : IRequest<List<AddressWalletDto>>;
 
 public record AddressWalletDto
 {
@@ -76,6 +75,9 @@ public record AddressWalletDto
     public bool IsDefault { get; init; }
 }
 
+
+
+//public record GetAllAddressQuery(Guid UserId) : IRequest<List<AddressWalletDto>>;
 //public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressQuery, List<AddressWalletDto>>
 //{
 //    private readonly IAddressWalletRepository _addressRepository;

@@ -14,7 +14,7 @@ public interface IUserRepository
     /// Checks if a user with the given email exists.
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellation = default);
     Task<User?> GetByIdAsync(Guid userId, CancellationToken cancellationToken);
-    void Update(object user);
+    void Update(User user);
 
     /// Add new user
     Task AddAsync(User user, CancellationToken cancellationToken = default);

@@ -14,8 +14,8 @@ public class UnitOfWork : IUnitOfWork
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         => await _context.SaveChangesAsync(cancellationToken);
 
-    //public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
-    //    => _currentTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+    public async Task BeginTransactionAsync(CancellationToken cancellationToken = default)
+        => _currentTransaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
     public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
     {
@@ -42,8 +42,5 @@ public class UnitOfWork : IUnitOfWork
         _disposed = true;
     }
 
-    public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+
 }

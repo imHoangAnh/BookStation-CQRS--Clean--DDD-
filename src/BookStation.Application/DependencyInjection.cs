@@ -14,6 +14,7 @@ namespace BookStation.Application
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
             // Register application services here
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             return services;
         }

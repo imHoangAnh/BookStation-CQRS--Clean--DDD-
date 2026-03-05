@@ -13,7 +13,7 @@ namespace BookStation.Infrastructure.Migrations
 {
     [DbContext(typeof(BookStationDbContext))]
     [Migration("20260302041742_clear")]
-    partial class clear
+    partial class Clear
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

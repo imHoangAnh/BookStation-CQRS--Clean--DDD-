@@ -68,7 +68,6 @@ public class UpdateAddressWalletCommandHandler : IRequestHandler<UpdateAddressWa
         );
 
         _addressRepository.Update(addressWallet);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return MapToResult(addressWallet);
     }

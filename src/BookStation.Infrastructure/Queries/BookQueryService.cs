@@ -1,3 +1,4 @@
+using BookStation.Application.Abstractions;
 using BookStation.Application.Queries.Books;
 using BookStation.Application.Common;
 using BookStation.Infrastructure.Data;
@@ -7,9 +8,9 @@ namespace BookStation.Infrastructure.Queries;
 
 public sealed class BookQueryService : IBookQueryService
 {
-    private readonly BookStationDbContext _dbContext;
+    private readonly IReadDbContext _dbContext;
 
-    public BookQueryService(BookStationDbContext dbContext)
+    public BookQueryService(IReadDbContext dbContext)
     {
         _dbContext = dbContext;
     }

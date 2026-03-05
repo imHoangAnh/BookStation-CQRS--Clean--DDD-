@@ -31,6 +31,5 @@ public class DeleteAddressWalletCommandHandler : IRequestHandler<DeleteAddressWa
             throw new UnauthorizedAccessException("You do not have permission to delete this address.");
 
         _addressRepository.Delete(address);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

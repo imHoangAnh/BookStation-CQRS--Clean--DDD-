@@ -24,6 +24,9 @@ public static class DependencyInjection
 
         // Register BookStationDbContext as DbContext (for generic usage)
         services.AddScoped<DbContext>(sp => sp.GetRequiredService<BookStationDbContext>());
+        
+        // Register IReadDbContext
+        services.AddScoped<IReadDbContext>(sp => sp.GetRequiredService<BookStationDbContext>());
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

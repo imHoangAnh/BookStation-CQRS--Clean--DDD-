@@ -56,7 +56,6 @@ public class CreateAddressWalletCommandHandler : IRequestHandler<CreateAddressWa
         );
 
         await _addressRepository.AddAsync(addressWallet, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return MapToResult(addressWallet);
     }

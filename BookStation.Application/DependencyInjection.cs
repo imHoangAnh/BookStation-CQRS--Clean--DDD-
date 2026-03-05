@@ -1,5 +1,5 @@
 using BookStation.Application.Behaviors;
-using FluentValidation;
+//using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -13,10 +13,8 @@ namespace BookStation.Application
             var assembly = Assembly.GetExecutingAssembly();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
-            
-            services.AddValidatorsFromAssembly(assembly);
             // Register application services here
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+            //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
             return services;
         }
     }

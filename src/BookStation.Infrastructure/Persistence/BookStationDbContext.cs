@@ -3,12 +3,12 @@ using BookStation.Core.Entities.BookAggregate;
 using BookStation.Core.Entities.CartAggregate;
 using BookStation.Core.Entities.OrderAggregate;
 using BookStation.Core.SharedKernel;
+using BookStation.Query.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using BookStation.Application.Abstractions;
 
 namespace BookStation.Infrastructure.Data;
 
-public class BookStationDbContext : DbContext,IReadDbContext
+public class BookStationDbContext : DbContext, IReadDbContext
 {
     public BookStationDbContext(DbContextOptions<BookStationDbContext> options) : base(options) { }
 

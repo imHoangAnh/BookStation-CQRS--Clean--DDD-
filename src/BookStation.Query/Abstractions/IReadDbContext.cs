@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using BookStation.Core.Entities.UserAggregate;
 using BookStation.Core.Entities.OrderAggregate;
 using BookStation.Core.Entities.BookAggregate;
 
+namespace BookStation.Query.Abstractions;
 
-namespace BookStation.Application.Abstractions;
-
+/// <summary>
+/// Read-only context for the read flow. Exposes only DbSet for querying; no SaveChanges.
+/// </summary>
 public interface IReadDbContext
 {
     DbSet<Book> Books { get; }

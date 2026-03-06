@@ -1,4 +1,4 @@
-namespace BookStation.Application.Queries.Books;
+namespace BookStation.Query.Dtos;
 
 public sealed record BookListDto(
     long Id,
@@ -16,4 +16,3 @@ public sealed record BookDetailDto(
     string? PublisherName,
     string? CoverImageUrl,
     int? PageCount);
-

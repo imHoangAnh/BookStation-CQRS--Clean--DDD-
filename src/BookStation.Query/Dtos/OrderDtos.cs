@@ -1,6 +1,6 @@
 using BookStation.Core.Enums;
 
-namespace BookStation.Application.Queries.Orders;
+namespace BookStation.Query.Dtos;
 
 public sealed record OrderListDto(
     long Id,
@@ -38,4 +38,3 @@ public sealed record OrderItemDto(
     int Quantity,
     decimal UnitPrice,
     decimal Subtotal);
-

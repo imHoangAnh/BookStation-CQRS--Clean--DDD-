@@ -1,8 +1,7 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="BookStation.Application/BookStation.Application.csproj" />
-    <Project Path="BookStation.Core/BookStation.Core.csproj" Id="76418e15-7685-4dfa-b487-0d7a0a508fe1" />
-    <Project Path="BookStation.Infrastructure/BookStation.Infrastructure.csproj" />
-    <Project Path="BookStation.WebApi/BookStation.WebApi.csproj" />
-  </Folder>
+  <Project Path="src/BookStation.Application/BookStation.Application.csproj" />
+  <Project Path="src/BookStation.Core/BookStation.Core.csproj" />
+  <Project Path="src/BookStation.Infrastructure/BookStation.Infrastructure.csproj" />
+  <Project Path="src/BookStation.Query/BookStation.Query.csproj" />
+  <Project Path="src/BookStation.WebApi/BookStation.WebApi.csproj" />
 </Solution>

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace BookStation.WebApi.Extensions;
@@ -16,6 +16,10 @@ public static class SwaggerServiceExtensions
                 Title = "BookStation API",
                 Version = "v1"
             });
+
+            options.CustomSchemaIds(type =>
+                (type.FullName ?? type.Name)
+                .Replace('+', '.'));
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {

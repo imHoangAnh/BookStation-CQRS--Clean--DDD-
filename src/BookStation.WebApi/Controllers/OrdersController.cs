@@ -1,82 +1,75 @@
-using BookStation.Application.Common;
-using BookStation.Application.Queries.Orders;
+using BookStation.Application.Orders.Commands;
+using BookStation.Query.Queries.Orders;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace BookStation.WebApi.Controllers;
+namespace BookStation.PublicApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class OrdersController : ControllerBase
 {
-    private readonly IOrderQueryService _orderQueryService;
+    private readonly IMediator _mediator;
 
-    public OrdersController(IOrderQueryService orderQueryService)
+    public OrdersController(IMediator mediator)
     {
-        _orderQueryService = orderQueryService;
+        _mediator = mediator;
     }
 
-    // DTO-style: load entities + map in memory
-    [HttpGet("dto")]
-    public async Task<ActionResult<IReadOnlyList<OrderListDto>>> GetAllDtoAsync(CancellationToken cancellationToken)
+    /// <summary>
+    /// Create a new order.
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateOrderResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] CreateOrderCommand command)
     {
-        var result = await _orderQueryService.GetAllDtoAsync(cancellationToken);
-        return Ok(result);
-    }
-
-    // Projection-style: project directly to DTO in database
-    [HttpGet("projection")]
-    public async Task<ActionResult<IReadOnlyList<OrderListDto>>> GetAllProjectionAsync(CancellationToken cancellationToken)
-    {
-        var result = await _orderQueryService.GetAllProjectionAsync(cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpGet("paged/dto")]
-    public async Task<ActionResult<PagedResult<OrderListDto>>> GetPagedDtoAsync(
-        [FromQuery] long? userId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await _orderQueryService.GetPagedDtoAsync(userId, page, pageSize, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpGet("paged/projection")]
-    public async Task<ActionResult<PagedResult<OrderListDto>>> GetPagedProjectionAsync(
-        [FromQuery] long? userId,
-        [FromQuery] int page = 1,
-        [FromQuery] int pageSize = 20,
-        CancellationToken cancellationToken = default)
-    {
-        var result = await _orderQueryService.GetPagedProjectionAsync(userId, page, pageSize, cancellationToken);
-        return Ok(result);
-    }
-
-    [HttpGet("{id:long}/dto")]
-    public async Task<ActionResult<OrderDetailDto>> GetByIdDtoAsync(long id, CancellationToken cancellationToken)
-    {
-        var result = await _orderQueryService.GetByIdDtoAsync(id, cancellationToken);
-
-        if (result is null)
+        try
         {
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetById), new { id = result.OrderId }, result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Get order details by ID.
+    /// </summary>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(OrderDetailDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(long id)
+    {
+        var query = new GetOrderByIdQuery(id);
+        var result = await _mediator.Send(query);
+
+        if (result == null)
             return NotFound();
+
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Get orders for current user.
+    /// </summary>
+    [HttpGet("my-orders")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMyOrders([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!long.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized(new { error = "Invalid or missing user identifier." });
         }
 
-        return Ok(result);
-    }
-
-    [HttpGet("{id:long}/projection")]
-    public async Task<ActionResult<OrderDetailDto>> GetByIdProjectionAsync(long id, CancellationToken cancellationToken)
-    {
-        var result = await _orderQueryService.GetByIdProjectionAsync(id, cancellationToken);
-
-        if (result is null)
-        {
-            return NotFound();
-        }
-
+        var query = new GetUserOrdersQuery(userId, page, pageSize);
+        var result = await _mediator.Send(query);
         return Ok(result);
     }
 }
-

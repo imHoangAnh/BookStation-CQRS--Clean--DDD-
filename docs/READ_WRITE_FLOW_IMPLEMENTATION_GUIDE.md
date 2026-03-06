@@ -28,7 +28,7 @@ YourSolution/
 └── YourSolution.Api/            # Controllers, Program.cs
 ```
 
-Quan trọng: **Query** nên có project riêng (hoặc folder riêng) và reference **Abstractions** chứa `IReadDbContext`. **Infrastructure** reference **Query** để implement `IReadDbContext` (DbContext implement interface đó).
+Quan trọng: **Query** nên có folder riêng và reference **Abstractions** chứa `IReadDbContext`. **Infrastructure** reference **Query** để implement `IReadDbContext` (DbContext implement interface đó).
 
 ---
 

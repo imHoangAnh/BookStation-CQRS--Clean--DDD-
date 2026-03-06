@@ -1,6 +1,7 @@
 using BookStation.Application.Commands.Address;
-using BookStation.Application.Queries.AddressWallet;
 using BookStation.Core.Enums;
+using BookStation.Query.Common;
+using BookStation.Query.Queries.AddressWallet;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +28,9 @@ public class AddressController : ControllerBase
     /// Get all addresses for the current user.
     /// </summary>
     [HttpGet]
-    [ProducesResponseType(typeof(List<AddressWalletResult>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Pagination<AddressWalletDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetAllAddresses(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAddresses([FromQuery] int page = 1, CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(new GetAllAddressQuery(UserId), cancellationToken);
         return Ok(result);

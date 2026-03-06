@@ -1,9 +1,12 @@
-﻿using BookStation.Application;
+using System.Reflection;
+using BookStation.Application;
 using BookStation.Infrastructure;
+using BookStation.Query.Queries.Books;
 using BookStation.WebApi.Extensions;
+using MediatR;
 using Microsoft.OpenApi.Models;
 
- var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -17,6 +20,11 @@ builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
+
+// MediatR: register Query handlers (read flow) in addition to Application (command) handlers.
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
+    typeof(GetAllBooksQuery).Assembly,
+    typeof(BookStation.Application.DependencyInjection).Assembly));
 
 var app = builder.Build();
 

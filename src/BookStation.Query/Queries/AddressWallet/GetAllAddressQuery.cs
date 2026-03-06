@@ -1,34 +1,23 @@
-﻿using BookStation.Application.Abstractions;
-using BookStation.Application.Common;
-using BookStation.Core.Enums;
-using BookStation.Core.Repositories;
+using BookStation.Query.Abstractions;
+using BookStation.Query.Common;
+using BookStation.Query.Dtos;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookStation.Application.Queries.AddressWallet;
+namespace BookStation.Query.Queries.AddressWallet;
 
+public sealed record GetAllAddressQuery(Guid UserId, int Page = 1) : IRequest<PagedResult<AddressWalletDto>>;
 
-public record GetAllAddressQuery(Guid UserId, int Page = 1) : IRequest<PagedResult<AddressWalletDto>>;
-public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressQuery, PagedResult<AddressWalletDto>>
+public sealed class GetAllAddressQueryHandler : IRequestHandler<GetAllAddressQuery, PagedResult<AddressWalletDto>>
 {
-    private readonly IReadDbContext _dbContext;
+    private readonly IReadDbContext _db;
+    private const int PageSize = 5;
 
-    public GetAllAddressesQueryHandler(IReadDbContext dbContext)
+    public GetAllAddressQueryHandler(IReadDbContext db) => _db = db;
+
+    public async Task<PagedResult<AddressWalletDto>> Handle(GetAllAddressQuery request, CancellationToken cancellationToken)
     {
-        _dbContext = dbContext;
-    }
-
-    public async Task<PagedResult<AddressWalletDto>> Handle(
-        GetAllAddressQuery request,
-        CancellationToken cancellationToken)
-    {
-        const int pageSize = 5;
-
-        var query = _dbContext.AddressWallets
+        var query = _db.AddressWallets
             .AsNoTracking()
             .Where(x => x.UserId == request.UserId);
 
@@ -36,8 +25,8 @@ public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressQuery, P
 
         var items = await query
             .OrderByDescending(x => x.IsDefault)
-            .Skip((request.Page - 1) * pageSize)
-            .Take(pageSize)
+            .Skip((request.Page - 1) * PageSize)
+            .Take(PageSize)
             .Select(x => new AddressWalletDto
             {
                 Id = x.Id,
@@ -53,28 +42,9 @@ public class GetAllAddressesQueryHandler : IRequestHandler<GetAllAddressQuery, P
             })
             .ToListAsync(cancellationToken);
 
-        return new PagedResult<AddressWalletDto>(
-            items,
-            totalCount,
-            request.Page,
-            pageSize);
+        return new PagedResult<AddressWalletDto>(items, totalCount, request.Page, PageSize);
     }
 }
-
-public record AddressWalletDto
-{
-    public Guid Id { get; init; }
-    public string RecipientName { get; init; } = string.Empty;
-    public string PhoneNumber { get; init; } = string.Empty;
-    public string Street { get; init; } = string.Empty;
-    public string Ward { get; init; } = string.Empty;
-    public string City { get; init; } = string.Empty;
-    public string Country { get; init; } = string.Empty;
-    public string? PostalCode { get; init; }
-    public AddressLabel Label { get; init; }
-    public bool IsDefault { get; init; }
-}
-
 
 
 //public record GetAllAddressQuery(Guid UserId) : IRequest<List<AddressWalletDto>>;

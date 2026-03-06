@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BookStation.Application\BookStation.Application.csproj" />
     <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
+    <ProjectReference Include="..\BookStation.Query\BookStation.Query.csproj" />
   </ItemGroup>
 
 </Project>
